@@ -1,11 +1,7 @@
 require 'spec_helper'
 
-def _create_hosting_provider()
-  return create_hosting_provider(ENV['GIT_HOSTING_PROVIDER'])
-end
 
-
-describe HostingProvider do
+describe Gitomator::Service::Hosting do
 
   before(:each) do
     @provider = create_hosting_provider(ENV['GIT_HOSTING_PROVIDER'])
