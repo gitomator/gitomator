@@ -17,17 +17,12 @@ describe HostingProvider do
   end
 
 
-  it "should be able to create_repo" do
-    repo = "test-repo" + Time.now.to_i.to_s
-    opts = {}
-    @provider.create_repo(repo, opts)
-  end
-
   it "create_repo should return a Gitom object" do
     repo = "test-repo" + Time.now.to_i.to_s
-    opts = {}
-    expect(@provider.create_repo(repo, opts)).to be_a_kind_of(Gitomator::Gitom)
+    opts = {'foo' => rand().to_s}
+    expect(@provider.create_repo(repo, opts)).to be_a_kind_of(Gitomator::Gitom::Base)
   end
+
 
   it "should be able to replay create_repo Gitom" do
     repo = "test-repo" + Time.now.to_i.to_s
