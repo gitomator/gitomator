@@ -24,6 +24,11 @@ describe HostingProvider do
   end
 
 
+  it "read_repo should return a repo model-object" do
+    expect(@provider.read_repo('test-repo')).to be_a_kind_of(Gitomator::Model::Hosting::Repo)
+  end
+
+
   it "should be able to replay create_repo Gitom" do
     repo = "test-repo" + Time.now.to_i.to_s
     opts = {'foo' => rand().to_s}
