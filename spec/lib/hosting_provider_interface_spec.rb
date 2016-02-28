@@ -6,8 +6,37 @@ end
 
 
 describe HostingProvider do
-  it "should not be nil" do
-    provider = _create_hosting_provider()
-    expect(provider).not_to be_nil
+
+  before(:each) do
+    @provider = create_hosting_provider(ENV['GIT_HOSTING_PROVIDER'])
   end
+
+
+  it "should not be nil" do
+    expect(@provider).not_to be_nil
+  end
+
+
+  it "should be able to create_repo" do
+    repo = "test-repo" + Time.now.to_i.to_s
+    opts = {}
+    @provider.create_repo(repo, opts)
+  end
+
+  it "create_repo should return a Gitom object" do
+    repo = "test-repo" + Time.now.to_i.to_s
+    opts = {}
+    expect(@provider.create_repo(repo, opts)).to be_a_kind_of(Gitomator::Gitom)
+  end
+
+  it "should be able to replay create_repo Gitom" do
+    repo = "test-repo" + Time.now.to_i.to_s
+    opts = {'foo' => rand().to_s}
+
+    gitom = @provider.create_repo(repo, opts)
+
+    expect(@provider).to receive(:create_repo).with(repo, opts)
+    @provider.replay_gitom(gitom)
+  end
+
 end
