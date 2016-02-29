@@ -9,6 +9,10 @@ module Gitomator
           raise "Unsupported"
         end
 
+        def init(local_repo_root, opts)
+          raise "Unsupported"
+        end
+
         def add(local_repo_root, path, opts)
           raise "Unsupported"
         end
