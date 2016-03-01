@@ -1,4 +1,3 @@
-require 'gitomator/gitom/hosting/repo'
 gem 'logger'; require 'logger'
 
 module Gitomator
