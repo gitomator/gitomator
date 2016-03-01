@@ -12,26 +12,38 @@ module Gitomator
           @logger = opts[:logger] || Logger.new(STDOUT)
         end
 
+
+        # ----------------------------------------------------------------------
+
+        def _delegate(method, *args)
+          result = nil
+          start = Time.now
+          begin
+            result = @provider.send(method, *args)
+            @logger.debug({method: method, args: args, result: result, start: start, finish: Time.now})
+            return result
+          rescue Exception => e
+            @logger.debug({method: method, args: args, exception: e, start: start, finish: Time.now})
+            raise
+          end
+        end
+
         # ----------------------- CRUD operations on repos ---------------------
 
         def create_repo(name, opts={})
-          repo = @provider.create_repo(name, opts)
-          @logger.debug({method: __callee__, args: [name, opts]})
-          return repo
+          _delegate(__callee__, name, opts)
         end
 
         def read_repo(name)
-          repo = @provider.read_repo(name)
-          @logger.debug({method: __callee__, args: [name]})
-          return repo
+          _delegate(__callee__, name)
         end
 
         def update_repo(name, opts)
-          raise "Unsupported"
+          _delegate(__callee__, name, opts)
         end
 
         def delete_repo(name)
-          raise "Unsupported"
+          _delegate(__callee__, name)
         end
 
         # ----------------------------------------------------------------------
