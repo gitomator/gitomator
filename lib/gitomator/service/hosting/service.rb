@@ -1,22 +1,29 @@
 require 'gitomator/gitom/hosting/repo'
+gem 'logger'; require 'logger'
 
 module Gitomator
   module Service
     module Hosting
-      class Base
+      class Service
 
-        def replay_gitom(gitom)
-          self.send(gitom.action, *(gitom.replay_args))
+
+        def initialize(provider, opts = {})
+          @provider = provider
+          @logger = opts[:logger] || Logger.new(STDOUT)
         end
 
         # ----------------------- CRUD operations on repos ---------------------
 
-        def create_repo(name, opts)
-          raise "Unsupported"
+        def create_repo(name, opts={})
+          repo = @provider.create_repo(name, opts)
+          @logger.debug({method: __callee__, args: [name, opts]})
+          return repo
         end
 
         def read_repo(name)
-          raise "Unsupported"
+          repo = @provider.read_repo(name)
+          @logger.debug({method: __callee__, args: [name]})
+          return repo
         end
 
         def update_repo(name, opts)

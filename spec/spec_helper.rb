@@ -1,11 +1,13 @@
 require 'gitomator'
-require "gitomator/service/hosting/github"
+require "gitomator/service/hosting/service"
+require "gitomator/service/hosting/provider/github"
 
-def create_hosting_provider(provider)
-  provider ||= ENV['GIT_HOSTING_PROVIDER']
-  case provider
+def create_hosting_service(provider_name)
+  provider_name ||= ENV['GIT_HOSTING_PROVIDER']
+  case provider_name
   when 'github'
-    return Gitomator::Service::Hosting::GitHub.new
+    return Gitomator::Service::Hosting::Service.new (
+      Gitomator::Service::Hosting::Provider::GitHub.new())
   else
     raise "Cannot create hosting provider. Unknown provider '#{provider}'"
   end
