@@ -64,6 +64,12 @@ module Gitomator
           end
 
 
+          def rename_repo(old_name, new_name, opts={})
+            raise "No such repo '#{old_name}'" unless Dir.exist? repo_root(old_name)
+            FileUtils.mv repo_root(old_name), repo_root(new_name)
+          end
+
+
         end
       end
     end

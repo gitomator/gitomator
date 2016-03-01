@@ -40,5 +40,16 @@ describe Gitomator::Service::Hosting::Service do
     expect(@hosting.read_repo(repo_name)).to be_nil
   end
 
+  it "rename_repo should work properly" do
+    repo_name1 = "test-repo-#{(Time.now.to_f * 1000).to_i}"
+    repo_name2 = 'new-' + repo_name1
+
+    @hosting.create_repo(repo_name1, {})
+    @hosting.rename_repo(repo_name1, repo_name2)
+
+    expect(@hosting.read_repo(repo_name1)).to be_nil
+    expect(@hosting.read_repo(repo_name2)).to_not be_nil
+  end
+
 
 end
