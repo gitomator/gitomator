@@ -5,7 +5,7 @@ module Gitomator
 
         attr_reader :name, :url, :opts
 
-        def initialize(name, url, opts)
+        def initialize(name, url, opts = {})
           @name = name
           @url = url
           @opts = opts

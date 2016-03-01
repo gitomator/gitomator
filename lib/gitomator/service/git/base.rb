@@ -1,5 +1,3 @@
-require 'gitomator/gitom/hosting/repo'
-
 module Gitomator
   module Service
     module Git
