@@ -29,5 +29,12 @@ describe Gitomator::Service::Hosting::Service do
     expect(@hosting.read_repo(repo)).to be_nil
   end
 
+  it "delete_repo should delete a repo" do
+    repo_name = "test-repo-#{(Time.now.to_f * 1000).to_i}"
+    @hosting.create_repo(repo_name, {})
+    @hosting.delete_repo(repo_name)
+    expect(@hosting.read_repo(repo_name)).to be_nil
+  end
+
 
 end
