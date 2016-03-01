@@ -1,30 +1,13 @@
-gem 'logger'; require 'logger'
+require 'gitomator/service/base'
 
 module Gitomator
   module Service
     module Hosting
-      class Service
+      class Service < Gitomator::Service::Base
 
 
         def initialize(provider, opts = {})
-          @provider = provider
-          @logger = opts[:logger] || Logger.new(STDOUT)
-        end
-
-
-        # ----------------------------------------------------------------------
-
-        def _delegate(method, *args)
-          result = nil
-          start = Time.now
-          begin
-            result = @provider.send(method, *args)
-            @logger.debug({method: method, args: args, result: result, start: start, finish: Time.now})
-            return result
-          rescue Exception => e
-            @logger.debug({method: method, args: args, exception: e, start: start, finish: Time.now})
-            raise
-          end
+          super(provider, opts)
         end
 
         # ----------------------- CRUD operations on repos ---------------------

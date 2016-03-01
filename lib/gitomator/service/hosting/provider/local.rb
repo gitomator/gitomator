@@ -1,5 +1,4 @@
 require 'gitomator/model/hosting/repo'
-require 'gitomator/service/git/shell_based'
 
 module Gitomator
   module Service
@@ -28,7 +27,7 @@ module Gitomator
           def create_repo(name, opts)
             raise "Directory exists, #{repo_root(name)}" if Dir.exist? repo_root(name)
             @git.init(repo_root(name), opts)
-            return Gitomator::Model::Hosting::Repo.new(name, "#{repo_root(name)}.git")
+            return Gitomator::Model::Hosting::Repo.new(name, "#{repo_root(name)}/.git")
           end
 
 
@@ -37,7 +36,7 @@ module Gitomator
           #
           def read_repo(name)
             if Dir.exist? repo_root(name)
-              return Gitomator::Model::Hosting::Repo.new(name, "git@github.com:#{repo_root(name)}.git")
+              return Gitomator::Model::Hosting::Repo.new(name, "#{repo_root(name)}/.git")
             else
               return nil
             end
