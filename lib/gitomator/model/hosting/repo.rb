@@ -11,6 +11,15 @@ module Gitomator
           @opts = opts
         end
 
+
+        def inspect
+          to_s
+        end
+
+        def to_s
+          "<Repo at #{url}>"
+        end
+
       end
     end
   end

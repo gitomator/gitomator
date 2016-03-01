@@ -7,9 +7,16 @@ module Gitomator
       module Provider
         class Local
 
-          def initialize(git_service, local_dir)
-            @git        = git_service
-            @local_dir  = local_dir
+          attr_reader :local_dir, :local_repos_dir
+
+          def initialize(git_service, local_dir, opts = {})
+            @git         = git_service
+
+            raise "Local directory doesn't exist, #{local_dir}" unless Dir.exist? local_dir
+            @local_dir   = local_dir
+
+            @local_repos_dir = File.join(@local_dir, opts[:repos_dir] || 'repos')
+            Dir.mkdir @local_repos_dir unless Dir.exist? @local_repos_dir
           end
 
           #---------------------------------------------------------------------
@@ -18,8 +25,9 @@ module Gitomator
             :local
           end
 
+
           def repo_root(name)
-            File.join(@local_dir, name)
+            File.join(local_repos_dir, name)
           end
 
           #---------------------------------------------------------------------
@@ -52,6 +60,7 @@ module Gitomator
             else
               raise "No such repo, '#{name}'"
             end
+            return nil
           end
 
 

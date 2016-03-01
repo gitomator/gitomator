@@ -4,6 +4,7 @@ module Gitomator
   module Service
     class Base
 
+      attr_reader :provider
 
       def initialize(provider, opts = {})
         @provider = provider
@@ -16,12 +17,21 @@ module Gitomator
         start = Time.now
         begin
           result = @provider.send(method, *args)
-          @logger.debug({method: method, args: args, result: result, start: start, finish: Time.now})
+          _log(method, args, start, {result: result})
           return result
         rescue Exception => e
-          @logger.debug({method: method, args: args, exception: e, start: start, finish: Time.now})
+          _log(method, args, start, {exception: e})
           raise
         end
+      end
+
+      def _log(method, args, start, data)
+        @logger.debug(
+          {provider: (provider.respond_to?(:name) ? provider.name : provider),
+           method: method, args: args,
+          duration_ms: ((Time.now. - start) * 1000),
+         }.merge(data)
+        )
       end
 
 

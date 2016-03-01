@@ -7,6 +7,10 @@ describe Gitomator::Service::Hosting::Service do
     @hosting = create_hosting_service(ENV['GIT_HOSTING_PROVIDER'])
   end
 
+  after(:each) do
+    cleanup_hosting_service(@hosting)
+  end
+
 
   it "should not be nil" do
     expect(@hosting).not_to be_nil

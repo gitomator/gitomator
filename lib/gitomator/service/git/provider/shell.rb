@@ -2,7 +2,7 @@ module Gitomator
   module Service
     module Git
       module Provider
-        class ShellBased
+        class Shell
 
           def clone(repo_url, local_repo_root, opts)
             _run_command("git clone #{repo_url} #{local_repo_root}", opts = {})
