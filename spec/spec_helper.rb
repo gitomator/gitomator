@@ -14,7 +14,7 @@ def create_hosting_service(provider_name)
   when 'github'
     return Gitomator::Service::Hosting::Service.new (
       Gitomator::Service::Hosting::Provider::GitHub.new(
-        ENV['GITHUB_ACCESS_TOKEN'], {org: ENV['GITHUB_TEST_ORG']}
+        ENV['GITHUB_TEST_ACCESS_TOKEN'], {org: ENV['GITHUB_TEST_ORG']}
       ))
   when 'local'
     git_provider = Gitomator::Service::Git::Provider::Shell.new()

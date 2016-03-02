@@ -48,8 +48,10 @@ module Gitomator
           end
 
 
-          def update_repo(name)
-            # Local-provider doesn't support updating (the meta data of) a repo
+          def update_repo(name, opts={})
+            if opts[:name]
+              _rename_repo(name, opts[:name])
+            end
             return read_repo(name)
           end
 
@@ -64,7 +66,7 @@ module Gitomator
           end
 
 
-          def rename_repo(old_name, new_name, opts={})
+          def _rename_repo(old_name, new_name)
             raise "No such repo '#{old_name}'" unless Dir.exist? repo_root(old_name)
             FileUtils.mv repo_root(old_name), repo_root(new_name)
           end

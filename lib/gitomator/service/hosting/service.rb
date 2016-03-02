@@ -28,11 +28,6 @@ module Gitomator
           _delegate(__callee__, name)
         end
 
-
-        def rename_repo(old_name, new_name, opts={})
-          _delegate(__callee__, old_name, new_name, opts)
-        end
-
         # ----------------------------------------------------------------------
 
 

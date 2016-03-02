@@ -50,7 +50,17 @@ module Gitomator
 
           def _to_model_obj(repo)
             return Gitomator::Model::Hosting::Repo.new(repo.name,
-                repo.clone_url, {r: repo})
+                repo.clone_url,
+                {
+                  name: repo.name,
+                  description: repo.description,
+                  homepage: repo.homepage,
+                  private: repo.private,
+                  has_issues: repo.has_issues,
+                  has_wiki: repo.has_wiki,
+                  has_downloads: repo.has_downloads,
+                  default_branch: repo.default_branch
+                })
           end
 
           #---------------------------------------------------------------------
@@ -66,24 +76,39 @@ module Gitomator
               :has_downloads => true
             }.merge(opts)
 
-            _to_model_obj @gh.create_repo(repo_name_full(name), opts)
+            _to_model_obj @gh.create_repo(repo_name_repo_only(name), opts)
           end
 
           def read_repo(name)
-            _to_model_obj @gh.repo repo_name_full(name)
+            begin
+              _to_model_obj @gh.repo repo_name_full(name)
+            rescue Octokit::NotFound
+              return nil
+            end
           end
 
+          #
+          # opts:
+          #   :name (String) — Name of the repo
+          #   :description (String) — Description of the repo
+          #   :homepage (String) — Home page of the repo
+          #   :private (String) — true makes the repository private, and false makes it public.
+          #   :has_issues (String) — true enables issues for this repo, false disables issues.
+          #   :has_wiki (String) — true enables wiki for this repo, false disables wiki.
+          #   :has_downloads (String) — true enables downloads for this repo, false disables downloads.
+          #   :default_branch (String) — Update the default branch for this repository.
+          #
           def update_repo(name, opts = {})
-            raise "Unsupported"
+            unless opts.empty?
+              _to_model_obj @gh.edit_repository repo_name_full(name), opts
+            end
           end
+
 
           def delete_repo(name)
-            raise "Unsupported"
+            @gh.delete_repo repo_name_full(name)
           end
 
-          def rename_repo(old_name, new_name, opts={})
-            raise "Unsupported"
-          end
 
 
 

@@ -40,15 +40,19 @@ describe Gitomator::Service::Hosting::Service do
     expect(@hosting.read_repo(repo_name)).to be_nil
   end
 
-  it "rename_repo should work properly" do
-    repo_name1 = "test-repo-#{(Time.now.to_f * 1000).to_i}"
-    repo_name2 = 'new-' + repo_name1
+  it "update a repo's name" do
+    name1 = "test-repo-#{(Time.now.to_f * 1000).to_i}"
+    name2 = 'new-' + name1
 
-    @hosting.create_repo(repo_name1, {})
-    @hosting.rename_repo(repo_name1, repo_name2)
+    @hosting.create_repo(name1, {})
+    @hosting.update_repo(name1, {name: name2})
 
-    expect(@hosting.read_repo(repo_name1)).to be_nil
-    expect(@hosting.read_repo(repo_name2)).to_not be_nil
+    repo1 = @hosting.read_repo(name1)
+    # If we ask for the old name, we can either get nil or the new repo
+    # (e.g. GitHub automatically forwards the request to the new repo)
+    expect(repo1.nil? || repo1.name == name2).to be true
+
+    expect(@hosting.read_repo(name2)).to_not be_nil
   end
 
 
