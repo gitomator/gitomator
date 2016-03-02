@@ -55,7 +55,7 @@ module Gitomator
                   name: repo.name,
                   description: repo.description,
                   homepage: repo.homepage,
-                  private: repo.private,
+                  private: repo.private?,
                   has_issues: repo.has_issues,
                   has_wiki: repo.has_wiki,
                   has_downloads: repo.has_downloads,
