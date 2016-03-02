@@ -37,7 +37,6 @@ module Gitomator
             split_name = name.split "/"
             case split_name.length
             when 1
-              raise "Invalid repo name, '#{name}'. No user/org specified." if @org.nil?
               return [@org, name]
             when 2
               return split_name
@@ -66,15 +65,19 @@ module Gitomator
           #---------------------------------------------------------------------
 
 
+          # opts = {
+          #   :auto_init => false,
+          #   :private => false,
+          #   :has_issues => false,
+          #   :has_wiki => false,
+          #   :has_downloads => true
+          #
           def create_repo(name, opts = {})
-            opts = {
-              :organization => repo_name_org_only(name),
-              :auto_init => false,  # Don't create a README.md automatically
-              :private => false,
-              :has_issues => false,
-              :has_wiki => false,
-              :has_downloads => true
-            }.merge(opts)
+            # Decide whether this is an organization or user repo ...
+            org = repo_name_org_only(name)
+            unless org.nil? || org == @gh.user.login
+              opts[:organization] = org
+            end
 
             _to_model_obj @gh.create_repo(repo_name_repo_only(name), opts)
           end
