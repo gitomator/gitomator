@@ -20,7 +20,7 @@ module Gitomator
           _delegate(__callee__, name)
         end
 
-        def update_repo(name, opts)
+        def update_repo(name, opts={})
           _delegate(__callee__, name, opts)
         end
 
@@ -33,7 +33,7 @@ module Gitomator
 
         # ----------------------- CRUD operations on users ---------------------
 
-        def create_user(name, opts)
+        def create_user(name, opts={})
           raise "Unsupported"
         end
 
@@ -41,7 +41,7 @@ module Gitomator
           raise "Unsupported"
         end
 
-        def update_user(name, opts)
+        def update_user(name, opts={})
           raise "Unsupported"
         end
 
@@ -51,22 +51,22 @@ module Gitomator
 
         # ----------------------------------------------------------------------
 
-        # ----------------------- CRUD operations on groups --------------------
+        # ----------------------- CRUD operations on teams ---------------------
 
-        def create_group(name, opts)
-          raise "Unsupported"
+        def create_team(name, opts={})
+          _delegate(__callee__, name, opts)
         end
 
-        def read_group(name)
-          raise "Unsupported"
+        def read_team(name)
+          _delegate(__callee__, name)
         end
 
-        def update_group(name, opts)
-          raise "Unsupported"
+        def update_team(name, opts={})
+          _delegate(__callee__, name, opts)
         end
 
-        def delete_group(name)
-          raise "Unsupported"
+        def delete_team(name)
+          _delegate(__callee__, name)
         end
 
         # ----------------------------------------------------------------------

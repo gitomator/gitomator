@@ -56,4 +56,12 @@ describe Gitomator::Service::Hosting::Service do
   end
 
 
+  it "create team" do
+    name = "team-#{(Time.now.to_f * 1000).to_i}"
+    team = @hosting.create_team(name)
+    expect(team).to be_a_kind_of(Gitomator::Model::Hosting::Team)
+    expect(team.id).to_not be_nil
+    expect(team.name).to_not be name
+  end
+
 end

@@ -1,5 +1,6 @@
 require 'gitomator/service/hosting/service'
 require 'gitomator/model/hosting/repo'
+require 'gitomator/model/hosting/team'
 require 'octokit'
 
 module Gitomator
@@ -47,7 +48,14 @@ module Gitomator
 
           #---------------------------------------------------------------------
 
-          def _to_model_obj(repo)
+          def _team_to_model_obj(team)
+            return Gitomator::Model::Hosting::Team.new(team.id, team.name,
+                {
+                  org: team.organization.login
+                })
+          end
+
+          def _repo_to_model_obj(repo)
             return Gitomator::Model::Hosting::Repo.new(repo.name,
                 repo.clone_url,
                 {
@@ -62,7 +70,7 @@ module Gitomator
                 })
           end
 
-          #---------------------------------------------------------------------
+          #---------------------------- REPO -----------------------------------
 
           #
           # opts:
@@ -79,12 +87,12 @@ module Gitomator
               opts[:organization] = org
             end
 
-            _to_model_obj @gh.create_repo(repo_name_repo_only(name), opts)
+            _repo_to_model_obj @gh.create_repo(repo_name_repo_only(name), opts)
           end
 
           def read_repo(name)
             begin
-              _to_model_obj @gh.repo repo_name_full(name)
+              _repo_to_model_obj @gh.repo repo_name_full(name)
             rescue Octokit::NotFound
               return nil
             end
@@ -103,13 +111,21 @@ module Gitomator
           #
           def update_repo(name, opts = {})
             unless opts.empty?
-              _to_model_obj @gh.edit_repository repo_name_full(name), opts
+              _repo_to_model_obj @gh.edit_repository repo_name_full(name), opts
             end
           end
 
 
           def delete_repo(name)
             @gh.delete_repo repo_name_full(name)
+          end
+
+
+
+          #---------------------------- TEAMS ----------------------------------
+
+          def create_team(name, opts = {})
+              _team_to_model_obj @gh.create_team(@org, {name: name})
           end
 
 
