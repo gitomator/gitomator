@@ -64,16 +64,16 @@ module Gitomator
 
           #---------------------------------------------------------------------
 
-
-          # opts = {
-          #   :auto_init => false,
-          #   :private => false,
-          #   :has_issues => false,
-          #   :has_wiki => false,
-          #   :has_downloads => true
+          #
+          # opts:
+          #   :auto_init (Boolean)
+          #   :private (Boolean)
+          #   :has_issues (Boolean)
+          #   :has_wiki (Boolean)
+          #   :has_download(Boolean)
           #
           def create_repo(name, opts = {})
-            # Decide whether this is an organization or user repo ...
+            # Decide whether this is an organization-repo or a user-repo ...
             org = repo_name_org_only(name)
             unless org.nil? || org == @gh.user.login
               opts[:organization] = org
