@@ -3,21 +3,11 @@ module Gitomator
     module Hosting
       class Team
 
-        attr_reader :id, :name, :opts
+        attr_reader :name, :opts
 
-        def initialize(id, name, opts = {})
-          @id   = id
+        def initialize(name, opts = {})
           @name = name
           @opts = opts
-        end
-
-
-        def inspect
-          to_s
-        end
-
-        def to_s
-          "<Team[#{id}]: #{name}>"
         end
 
       end

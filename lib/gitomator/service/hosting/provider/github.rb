@@ -12,6 +12,10 @@ module Gitomator
           def initialize(access_token, opts = {})
             @gh = Octokit::Client.new(:access_token => access_token)
             @org = opts[:org]
+
+            # GitHub API doesn't have a straight forward way to get a team by name,
+            # so we'll keep a cahce in memory (String --> Gitomator::Model::Hosting::Team)
+            @name2team_cache = {}
           end
 
           def name
@@ -49,9 +53,10 @@ module Gitomator
           #---------------------------------------------------------------------
 
           def _team_to_model_obj(team)
-            return Gitomator::Model::Hosting::Team.new(team.id, team.name,
+            return Gitomator::Model::Hosting::Team.new(team.name,
                 {
-                  org: team.organization.login
+                  id: team.id,
+                  org: (team.organization.nil? ? @org : team.organization.login)
                 })
           end
 
@@ -69,6 +74,22 @@ module Gitomator
                   default_branch: repo.default_branch
                 })
           end
+
+
+          def _fetch_teams
+            name2team = {}
+
+            begin
+              @gh.auto_paginate = true # We want to get all teams
+              @gh.org_teams(@org).each  do |t|
+                name2team[t.name] = _team_to_model_obj(t)
+              end
+              @name2team_cache = name2team
+            ensure
+              @gh.auto_paginate = nil  # We don't want to hit GitHub's API rate-limit
+            end
+          end
+
 
           #---------------------------- REPO -----------------------------------
 
@@ -128,7 +149,37 @@ module Gitomator
               _team_to_model_obj @gh.create_team(@org, {name: name})
           end
 
+          def read_team(name)
+            unless @name2team_cache.has_key? name
+              _fetch_teams()
+            end
+            return @name2team_cache[name]
+          end
 
+          #
+          # opts:
+          #  - :name (String)
+          #  - :permission (String, one of 'pull', 'push' or 'admin')
+          #
+          def update_team(name, opts)
+            unless @name2team_cache.has_key? name
+              _fetch_teams()
+            end
+            raise "No such team, '#{name}'" unless @name2team_cache.has_key? name
+
+            t = @gh.update_team(@name2team_cache[name].opts[:id], opts)
+            @name2team_cache[name] = _team_to_model_obj(t)
+          end
+
+          def delete_team(name)
+            unless @name2team_cache.has_key? name
+              _fetch_teams()
+            end
+            if @name2team_cache.has_key? name
+              @gh.delete_team @name2team_cache[name].opts[:id]
+              @name2team_cache.delete(name)
+            end
+          end
 
 
 

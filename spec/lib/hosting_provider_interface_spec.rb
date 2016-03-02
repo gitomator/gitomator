@@ -56,12 +56,49 @@ describe Gitomator::Service::Hosting::Service do
   end
 
 
+  # ------------------------------ TEAMS ---------------------------------------
+
+
+
   it "create team" do
     name = "team-#{(Time.now.to_f * 1000).to_i}"
     team = @hosting.create_team(name)
     expect(team).to be_a_kind_of(Gitomator::Model::Hosting::Team)
-    expect(team.id).to_not be_nil
     expect(team.name).to_not be name
   end
+
+
+  it "create team and get it" do
+    name = "team-#{(Time.now.to_f * 1000).to_i}"
+    @hosting.create_team(name)
+    team = @hosting.read_team(name)
+
+    expect(team).to be_a_kind_of(Gitomator::Model::Hosting::Team)
+    expect(team.name).to_not be name
+  end
+
+  it "delete_team should delete a team" do
+    name = "team-#{(Time.now.to_f * 1000).to_i}"
+    @hosting.create_team(name)
+    @hosting.delete_team(name)
+    expect(@hosting.read_team(name)).to be_nil
+  end
+
+  it "update a team's name" do
+    name1 = "team-#{(Time.now.to_f * 1000).to_i}"
+    name2 = 'new-' + name1
+
+    @hosting.create_team(name1)
+    @hosting.update_team(name1, {name: name2})
+
+    team1 = @hosting.read_team(name1)
+    # If we ask for the old name, we can either get nil or the new team
+    expect(team1.nil? || team1.name == name2).to be true
+
+    team2 = @hosting.read_team(name2)
+    expect(team2).to be_a_kind_of(Gitomator::Model::Hosting::Team)
+    expect(team2.name).to_not be name2
+  end
+
 
 end
