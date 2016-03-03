@@ -94,20 +94,22 @@ module Gitomator
 
         # --------------- CRUD operations on permissions -----------------------
 
-        def create_permission(user_or_group, repo, opts)
-          raise "Unsupported"
+        #
+        # @param user (String) username
+        # @param repo (String) Repo name (full name, or repo-only)
+        # @param permission (Symbol) Either :read or :write or nil
+        #
+        def set_user_permission(user, repo, permission)
+          _delegate(__callee__, user, repo, permission)
         end
 
-        def read_permission(user_or_group, repo)
-          raise "Unsupported"
-        end
-
-        def update_permission(user_or_group, repo, opts)
-          raise "Unsupported"
-        end
-
-        def delete_permission(user_or_group, repo)
-          raise "Unsupported"
+        #
+        # @param user (String) username
+        # @param team (String) Team name
+        # @param permission (Symbol) Either :read or :write or nil
+        #
+        def set_team_permission(team, repo, permission)
+          _delegate(__callee__, team, repo, permission)
         end
 
         # ----------------------------------------------------------------------

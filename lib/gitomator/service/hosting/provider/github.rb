@@ -182,6 +182,53 @@ module Gitomator
           end
 
 
+          #---------------------------------------------------------------------
+
+          def set_user_permission(user, repo, permission)
+            permission = _strinigify_permission(permission)
+            if permission.nil?
+              @gh.remove_collab(repo_name_full(repo), user)
+            else
+              @gh.add_collab(repo_name_full(repo), user, {permission: permission})
+            end
+          end
+
+
+          def set_team_permission(team, repo, permission)
+            permission = _strinigify_permission(permission)
+
+            t = read_team(team)
+            raise "No such team, #{team}" if t.nil?
+
+            if permission.nil?
+              @gh.remove_team_repo(t.opts[:id], repo_name_full(repo))
+            else
+              @gh.add_team_repo(t.opts[:id], repo_name_full(repo),
+                {
+                  permission: permission,
+                  accept: 'application/vnd.github.ironman-preview+json'
+                }
+              )
+            end
+          end
+
+
+          def _strinigify_permission(permission)
+            if permission.nil?
+              return nil
+            end
+
+            case permission.to_s
+            when 'read' || 'pull'
+              return 'pull'
+            when 'write' || 'push'
+              return 'push'
+            else
+              raise "Invalid permission '#{permission}'"
+            end
+          end
+
+
 
         end
       end
