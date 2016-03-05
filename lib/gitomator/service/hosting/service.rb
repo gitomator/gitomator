@@ -72,22 +72,22 @@ module Gitomator
         # ----------------------------------------------------------------------
 
 
-        # ------------ CRUD operations on group_memberships --------------------
+        # ------------ CRUD operations on team_memberships ---------------------
 
-        def create_group_membership(group, user, opts)
-          raise "Unsupported"
+        def create_team_membership(team_name, user_name, opts={})
+          _delegate(__callee__, team_name, user_name, opts)
         end
 
-        def read_group_membership(group, user)
-          raise "Unsupported"
+        def read_team_membership(team_name, user_name)
+          _delegate(__callee__, team_name, user_name)
         end
 
-        def update_group_membership(group, user, opts)
-          raise "Unsupported"
+        def update_team_membership(team_name, user_name, opts={})
+          _delegate(__callee__, team_name, user_name, opts)
         end
 
-        def delete_group_membership(group, user)
-          raise "Unsupported"
+        def delete_team_membership(team_name, user_name)
+          _delegate(__callee__, team_name, user_name)
         end
 
         # ----------------------------------------------------------------------

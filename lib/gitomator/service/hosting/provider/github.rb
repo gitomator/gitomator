@@ -229,6 +229,23 @@ module Gitomator
           end
 
 
+          #--------------------------- Team Membership -------------------------
+
+          def create_team_membership(team_name, user_name, opts={})
+            team = read_team(team_name)
+            opts[:role] = 'member' if opts[:role].nil?
+            @gh.add_team_membership(team.opts[:id], user_name, opts)
+          end
+
+          def delete_team_membership(team_name, user_name)
+            team = read_team(team_name)
+            @gh.remove_team_membership(team.opts[:id], user_name)
+          end
+
+
+          #---------------------------------------------------------------------
+
+
 
         end
       end
