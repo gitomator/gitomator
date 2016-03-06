@@ -267,6 +267,23 @@ module Gitomator
           #---------------------------------------------------------------------
 
 
+          def search_users(opts={})
+            # At the moment, we can only search by team_name
+            raise "Missing required option, :team_name" if opts[:team_name].nil?
+            team = read_team(opts[:team_name])
+
+            # Return an iterable of hashes, each hash containing the following keys:
+            include_keys = [:login, :id, :type, :site_admin]
+            begin
+              @gh.auto_paginate = true # We want to get all team members
+              @gh.team_members(team.opts[:id])
+                .map {|m| m.to_h.select { |k,_|  include_keys.include? k } }
+            ensure
+              @gh.auto_paginate = nil  # We don't want to hit GitHub's API rate-limit
+            end
+          end
+
+
 
         end
       end

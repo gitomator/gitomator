@@ -30,26 +30,9 @@ module Gitomator
 
         # ----------------------------------------------------------------------
 
-
-        # ----------------------- CRUD operations on users ---------------------
-
-        def create_user(name, opts={})
-          raise "Unsupported"
+        def search_users(opts={})
+          _delegate(__callee__, opts)
         end
-
-        def read_user(name)
-          raise "Unsupported"
-        end
-
-        def update_user(name, opts={})
-          raise "Unsupported"
-        end
-
-        def delete_user(name)
-          raise "Unsupported"
-        end
-
-        # ----------------------------------------------------------------------
 
         # ----------------------- CRUD operations on teams ---------------------
 
