@@ -284,6 +284,43 @@ module Gitomator
           end
 
 
+          #---------------------------------------------------------------------
+
+
+          #
+          # @param src (String) of the following format 'org/repo:branch'.
+          # @param dst (String) of the following format 'org/repo:branch'.
+          #
+          def create_pull_reuqest(src, dst, opts = {})
+
+            def extract_org_repo_and_branch(src_or_dst)
+              match = src_or_dst.match(/(.+)\/(.+):(.+)/i)
+              raise "Invalid src/dst, #{src_or_dst} (expected: `org_or_user/repo:branch`)" if match.nil?
+              return match.captures
+            end
+
+            src_org, src_repo, src_branch = extract_org_repo_and_branch(src)
+            dst_org, dst_repo, dst_branch = extract_org_repo_and_branch(dst)
+
+            unless src_repo == dst_repo
+              raise "Cannot create pull-request from #{src} to #{dst} (must be the same repo or a fork)."
+            end
+
+            @gh.create_pull_request("#{dst_org}/#{dst_repo}", dst_branch,
+              (src_org == dst_org ? '' : "#{src_org}:") + src_branch,
+              opts[:title] || 'New Pull Request',
+              opts[:body] || 'Pull-request created using Gitomator.'
+            )
+
+          end
+
+
+
+
+
+          #---------------------------------------------------------------------
+
+
 
         end
       end

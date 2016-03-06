@@ -100,8 +100,8 @@ module Gitomator
 
         # ------------------- CRUD operations on pull-requests -----------------
 
-        def create_pull_reuqest(src, dst, opts)
-          raise "Unsupported"
+        def create_pull_reuqest(src, dst, opts = {})
+          _delegate(__callee__, src, dst, opts)
         end
 
         def read_pull_reuqest(src, dst)
