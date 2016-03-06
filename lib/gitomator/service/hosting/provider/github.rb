@@ -234,7 +234,28 @@ module Gitomator
           def create_team_membership(team_name, user_name, opts={})
             team = read_team(team_name)
             opts[:role] = 'member' if opts[:role].nil?
-            @gh.add_team_membership(team.opts[:id], user_name, opts)
+            @gh.add_team_membership(team.opts[:id], user_name, opts).to_h
+          end
+
+
+          def read_team_membership(team_name, user_name)
+            team = read_team(team_name)
+            begin
+              return @gh.team_membership(team.opts[:id], user_name).to_h
+            rescue Octokit::NotFound
+              return nil
+            end
+          end
+
+
+          #
+          # The only valid option is :role, which must be one of 'member' or
+          # 'maintainer'.
+          #
+          def update_team_membership(team_name, user_name, opts={})
+            raise "Missing required option, :role" if opts[:role].nil?
+            team = read_team(team_name)
+            @gh.add_team_membership(team.opts[:id], user_name, opts).to_h
           end
 
           def delete_team_membership(team_name, user_name)
