@@ -34,16 +34,17 @@ module Gitomator
 
       def _delegate(method, *args)
         result = nil
-        @before_callbacks.each {|block| block.call(method, args) }
+        @before_callbacks.each {|block| self.instance_exec(method, args, &block) }
+
 
         begin
           result = @provider.send(method, *args)
         rescue Exception => e
-          @error_callbacks.each {|block| block.call(method, args, e) }
+          @error_callbacks.each {|block| self.instance_exec(method, args, e, &block) }
           raise e
         end
 
-        @after_callbacks.each {|block| block.call(method, args, result) }
+        @after_callbacks.each {|block| self.instance_exec(method, args, result, &block) }
         return result
       end
 
