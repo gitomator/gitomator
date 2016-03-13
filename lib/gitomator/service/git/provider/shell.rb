@@ -23,7 +23,7 @@ module Gitomator
           end
 
           def checkout(local_repo_root, branch, opts)
-            cmd = "checkout #{opts.has_key? '-b' ? '' : '-b'} #{branch}"
+            cmd = "checkout #{opts.has_key?('-b') ? '' : '-b'} #{branch}"
             _run_git_command(cmd, local_repo_root, opts)
           end
 
