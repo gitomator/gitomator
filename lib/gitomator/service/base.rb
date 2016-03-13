@@ -9,31 +9,43 @@ module Gitomator
       def initialize(provider, opts = {})
         @provider = provider
         @logger = opts[:logger] || Logger.new(STDOUT)
+
+        @before_callbacks = []
+        @after_callbacks = []
+        @error_callbacks = []
+      end
+
+      #
+      # @param type (Symbol) One of :before, :after: or :error.
+      #
+      def inject_callback(type, &block)
+        case type
+        when :before
+          @before_callbacks.push block
+        when :after
+          @after_callbacks.push block
+        when :error
+          @error_callbacks.push block
+        else
+          raise "Invalid callback type, #{type}. Must be one of :before, :after or :error."
+        end
       end
 
 
       def _delegate(method, *args)
         result = nil
-        start = Time.now
+        @before_callbacks.each {|block| block.call(method, args) }
+
         begin
           result = @provider.send(method, *args)
-          _log(method, args, start, {result: result})
-          return result
         rescue Exception => e
-          _log(method, args, start, {exception: e})
-          raise
+          @error_callbacks.each {|block| block.call(method, args, e) }
+          raise e
         end
-      end
 
-      def _log(method, args, start, data)
-        @logger.debug(
-          {provider: (provider.respond_to?(:name) ? provider.name : provider),
-           method: method, args: args,
-          duration_ms: ((Time.now. - start) * 1000),
-         }.merge(data)
-        )
+        @after_callbacks.each {|block| block.call(method, args, result) }
+        return result
       end
-
 
     end
   end
