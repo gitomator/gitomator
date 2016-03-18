@@ -105,19 +105,19 @@ module Gitomator
         end
 
         def read_pull_reuqest(id)
-          raise "Unsupported"
+          _delegate(__callee__, id)
         end
 
         def update_pull_reuqest(id, opts)
-          raise "Unsupported"
+          _delegate(__callee__, id, opts)
         end
 
         def delete_pull_reuqest(id)
-          raise "Unsupported"
+          _delegate(__callee__, id, opts)
         end
 
         def search_pull_reuqests(opts = {})
-          raise "Unsupported"
+          _delegate(__callee__, opts)
         end
 
         # ----------------------------------------------------------------------
