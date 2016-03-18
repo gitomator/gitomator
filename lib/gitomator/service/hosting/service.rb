@@ -104,15 +104,19 @@ module Gitomator
           _delegate(__callee__, src, dst, opts)
         end
 
-        def read_pull_reuqest(src, dst)
+        def read_pull_reuqest(id)
           raise "Unsupported"
         end
 
-        def update_pull_reuqest(src, dst, opts)
+        def update_pull_reuqest(id, opts)
           raise "Unsupported"
         end
 
-        def delete_pull_reuqest(src, dst)
+        def delete_pull_reuqest(id)
+          raise "Unsupported"
+        end
+
+        def search_pull_reuqests(opts = {})
           raise "Unsupported"
         end
 
