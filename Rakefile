@@ -1,7 +1,10 @@
 require "bundler/gem_tasks"
-require "rspec/core/rake_task"
 
-RSpec::Core::RakeTask.new
+begin
+  require 'rspec/core/rake_task'
+  RSpec::Core::RakeTask.new
+rescue LoadError
+end
 
 task :test, [:hosting_provider] do |t, args|
   unless args.hosting_provider
