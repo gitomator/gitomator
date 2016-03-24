@@ -28,10 +28,8 @@ module Gitomator
           _delegate(__callee__, name)
         end
 
-        # ----------------------------------------------------------------------
-
-        def search_users(opts={})
-          _delegate(__callee__, opts)
+        def search_repos(query, opts={})
+          _delegate(__callee__, query, opts={})
         end
 
         # ----------------------- CRUD operations on teams ---------------------
@@ -52,10 +50,18 @@ module Gitomator
           _delegate(__callee__, name)
         end
 
+        def search_teams(query, opts={})
+          _delegate(__callee__, query, opts={})
+        end
+
         # ----------------------------------------------------------------------
 
+        def search_users(query, opts={})
+          _delegate(__callee__, query, opts={})
+        end
 
         # ------------ CRUD operations on team_memberships ---------------------
+
 
         def create_team_membership(team_name, user_name, opts={})
           _delegate(__callee__, team_name, user_name, opts)
@@ -72,8 +78,6 @@ module Gitomator
         def delete_team_membership(team_name, user_name)
           _delegate(__callee__, team_name, user_name)
         end
-
-        # ----------------------------------------------------------------------
 
         # --------------- CRUD operations on permissions -----------------------
 
@@ -116,8 +120,8 @@ module Gitomator
           _delegate(__callee__, id, opts)
         end
 
-        def search_pull_reuqests(opts = {})
-          _delegate(__callee__, opts)
+        def search_pull_reuqests(query, opts = {})
+          _delegate(__callee__, query, opts={})
         end
 
         # ----------------------------------------------------------------------
