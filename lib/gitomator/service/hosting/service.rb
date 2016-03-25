@@ -29,7 +29,7 @@ module Gitomator
         end
 
         def search_repos(query, opts={})
-          _delegate(__callee__, query, opts={})
+          _delegate(__callee__, query, {})
         end
 
         # ----------------------- CRUD operations on teams ---------------------
@@ -51,13 +51,13 @@ module Gitomator
         end
 
         def search_teams(query, opts={})
-          _delegate(__callee__, query, opts={})
+          _delegate(__callee__, query, opts)
         end
 
         # ----------------------------------------------------------------------
 
         def search_users(query, opts={})
-          _delegate(__callee__, query, opts={})
+          _delegate(__callee__, query, opts)
         end
 
         # ------------ CRUD operations on team_memberships ---------------------
@@ -121,7 +121,7 @@ module Gitomator
         end
 
         def search_pull_reuqests(query, opts = {})
-          _delegate(__callee__, query, opts={})
+          _delegate(__callee__, query, opts)
         end
 
         # ----------------------------------------------------------------------
