@@ -1,14 +1,30 @@
-require 'spec_helper'
+require 'gitomator'
+
+require "gitomator/service/hosting/service"
+require "gitomator/service/hosting/provider/local"
+
+require "gitomator/service/git/service"
+require "gitomator/service/git/provider/shell"
+
+require 'fileutils'
 
 
-describe Gitomator::Service::Hosting::Service do
+
+describe Gitomator::Service::Hosting::Provider::Local do
+
+  before(:all) do
+    @git_provider = Gitomator::Service::Git::Provider::Shell.new()
+  end
 
   before(:each) do
-    @hosting = create_hosting_service(ENV['GIT_HOSTING_PROVIDER'])
+    @local_dir = Dir.mktmpdir()
+    @hosting = Gitomator::Service::Hosting::Service.new (
+      Gitomator::Service::Hosting::Provider::Local.new(@git_provider, @local_dir)
+    )
   end
 
   after(:each) do
-    cleanup_hosting_service(@hosting)
+    FileUtils.rm_rf(@local_dir)
   end
 
 
@@ -61,44 +77,23 @@ describe Gitomator::Service::Hosting::Service do
 
 
   it "create team" do
-    name = "team-#{(Time.now.to_f * 1000).to_i}"
-    team = @hosting.create_team(name)
-    expect(team).to be_a_kind_of(Gitomator::Model::Hosting::Team)
-    expect(team.name).to_not be name
+    expect { @hosting.create_team("foo") } .to raise_error(
+                                  Gitomator::Service::NotSupportedByProvider)
   end
 
-
-  it "create team and get it" do
-    name = "team-#{(Time.now.to_f * 1000).to_i}"
-    @hosting.create_team(name)
-    team = @hosting.read_team(name)
-
-    expect(team).to be_a_kind_of(Gitomator::Model::Hosting::Team)
-    expect(team.name).to_not be name
+  it "read team" do
+    expect { @hosting.read_team("foo") } .to raise_error(
+                                  Gitomator::Service::NotSupportedByProvider)
   end
 
-  it "delete_team should delete a team" do
-    name = "team-#{(Time.now.to_f * 1000).to_i}"
-    @hosting.create_team(name)
-    @hosting.delete_team(name)
-    expect(@hosting.read_team(name)).to be_nil
+  it "update team" do
+    expect { @hosting.update_team("foo") } .to raise_error(
+                                  Gitomator::Service::NotSupportedByProvider)
   end
 
-  it "update a team's name" do
-    name1 = "team-#{(Time.now.to_f * 1000).to_i}"
-    name2 = 'new-' + name1
-
-    @hosting.create_team(name1)
-    @hosting.update_team(name1, {name: name2})
-
-    team1 = @hosting.read_team(name1)
-    # If we ask for the old name, we can either get nil or the new team
-    expect(team1.nil? || team1.name == name2).to be true
-
-    team2 = @hosting.read_team(name2)
-    expect(team2).to be_a_kind_of(Gitomator::Model::Hosting::Team)
-    expect(team2.name).to_not be name2
+  it "delete team" do
+    expect { @hosting.delete_team("foo") } .to raise_error(
+                                  Gitomator::Service::NotSupportedByProvider)
   end
-
 
 end
