@@ -112,8 +112,8 @@ module Gitomator
           _delegate(__callee__, dst_repo, id)
         end
 
-        def update_pull_reuqest(id, opts)
-          _delegate(__callee__, id, opts)
+        def update_pull_reuqest(dst_repo, id, opts)
+          _delegate(__callee__, dst_repo, id)
         end
 
         def delete_pull_reuqest(dst_repo, id)
