@@ -29,7 +29,7 @@ module Gitomator
         end
 
         def search_repos(query, opts={})
-          _delegate(__callee__, query, {})
+          _delegate(__callee__, query, opts)
         end
 
         # ----------------------- CRUD operations on teams ---------------------
