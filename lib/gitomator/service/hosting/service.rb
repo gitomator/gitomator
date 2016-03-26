@@ -108,8 +108,8 @@ module Gitomator
           _delegate(__callee__, src, dst, opts)
         end
 
-        def read_pull_reuqest(id)
-          _delegate(__callee__, id)
+        def read_pull_reuqest(dst_repo, id)
+          _delegate(__callee__, dst_repo, id)
         end
 
         def update_pull_reuqest(id, opts)
