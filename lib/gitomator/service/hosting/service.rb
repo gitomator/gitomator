@@ -103,26 +103,72 @@ module Gitomator
 
 
         # ------------------- CRUD operations on pull-requests -----------------
+        #
+        # We assume that pull-requests have id's, and that id's are
+        # unique within a repo.
+        # That is, the pair (dest_repo, id) uniquely identifies a pull-request.
+        #
 
-        def create_pull_reuqest(src, dst, opts = {})
+
+
+        def create_pull_request(src, dst, opts = {})
           _delegate(__callee__, src, dst, opts)
         end
 
-        def read_pull_reuqest(dst_repo, id)
+
+
+        def read_pull_request(dst_repo, id)
           _delegate(__callee__, dst_repo, id)
         end
 
-        def update_pull_reuqest(dst_repo, id, opts)
+        def read_pull_requests(dst_repo, opts = {})
+          _delegate(__callee__, dst_repo, opts)
+        end
+
+
+        # Pull-request update methods:
+
+
+        def merge_pull_request(dst_repo, id, message='')
+          _delegate(__callee__, dst_repo, id, message)
+        end
+
+        def close_pull_request(dst_repo, id)
           _delegate(__callee__, dst_repo, id)
         end
 
-        def delete_pull_reuqest(dst_repo, id)
+        def open_pull_request(dst_repo, id)
           _delegate(__callee__, dst_repo, id)
         end
 
-        def search_pull_reuqests(query, opts = {})
-          _delegate(__callee__, query, opts)
+
+        def label_pull_request(dst_repo, id, label)
+          _delegate(__callee__, dst_repo, id, label)
         end
+
+        def unlabel_pull_request(dst_repo, id, label)
+          _delegate(__callee__, dst_repo, id, label)
+        end
+
+
+        def comment_on_request(dst_repo, id, comment)
+          _delegate(__callee__, dst_repo, id, comment)
+        end
+
+
+        #
+        # A "general-purpose" update method for pull-requests.
+        #
+        def update_pull_request(dst_repo, id, opts)
+          _delegate(__callee__, dst_repo, id)
+        end
+
+
+
+        def delete_pull_request(dst_repo, id)
+          _delegate(__callee__, dst_repo, id)
+        end
+
 
         # ----------------------------------------------------------------------
 
