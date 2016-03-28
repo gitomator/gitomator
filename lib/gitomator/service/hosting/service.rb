@@ -142,12 +142,12 @@ module Gitomator
         end
 
 
-        def label_pull_request(dst_repo, id, label)
-          _delegate(__callee__, dst_repo, id, label)
+        def label_pull_request(dst_repo, id, *labels)
+          _delegate(__callee__, dst_repo, id, *labels)
         end
 
-        def unlabel_pull_request(dst_repo, id, label)
-          _delegate(__callee__, dst_repo, id, label)
+        def unlabel_pull_request(dst_repo, id, *labels)
+          _delegate(__callee__, dst_repo, id, *labels)
         end
 
 
