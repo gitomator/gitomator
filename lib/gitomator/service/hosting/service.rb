@@ -151,11 +151,6 @@ module Gitomator
         end
 
 
-        def comment_on_request(dst_repo, id, comment)
-          _delegate(__callee__, dst_repo, id, comment)
-        end
-
-
         #
         # A "general-purpose" update method for pull-requests.
         #
