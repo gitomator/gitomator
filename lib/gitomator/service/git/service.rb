@@ -17,27 +17,27 @@ module Gitomator
         end
 
         def init(local_repo_root, opts)
-          _delegate(local_repo_root, opts)
+          _delegate(__callee__, local_repo_root, opts)
         end
 
         def add(local_repo_root, path, opts)
-          _delegate(local_repo_root, path, opts)
+          _delegate(__callee__, local_repo_root, path, opts)
         end
 
         def commit(local_repo_root, message, opts)
-          _delegate(local_repo_root, message, opts)
+          _delegate(__callee__, local_repo_root, message, opts)
         end
 
         def checkout(local_repo_root, branch, opts)
-          _delegate(local_repo_root, branch, opts)
+          _delegate(__callee__, local_repo_root, branch, opts)
         end
 
         def set_remote(local_repo_root, remote, url, opts)
-          _delegate(local_repo_root, remote, url, opts)
+          _delegate(__callee__, local_repo_root, remote, url, opts)
         end
 
         def push(local_repo_root, remote, opts)
-          _delegate
+          _delegate(__callee__, local_repo_root, remote, opts)
         end
 
       end
