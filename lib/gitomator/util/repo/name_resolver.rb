@@ -29,8 +29,7 @@ module Gitomator
         #
         # Return an array with two strings, the namespace and name of the given
         # repo. If the given repo is missing a namespace, self's default
-        # namespace will be used (if there isn't a default namespace, an error
-        # will be raised).
+        # namespace will be used.
         #
         # @param name [String] - The name of the repo in the format "namespace/name".
         #
@@ -38,11 +37,7 @@ module Gitomator
           split_name = name.split "/"
           case split_name.length
           when 1
-            if @default_namespace.nil?
-              raise "Cannot tokenize repo name, '#{name}' - Missing namespace."
-            else
-              return [@default_namespace, name]
-            end
+            return [@default_namespace, name]
           when 2
             return split_name
           else
