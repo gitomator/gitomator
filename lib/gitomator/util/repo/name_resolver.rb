@@ -15,10 +15,15 @@ module Gitomator
 
 
         def full_name(repo_name)
-          tokenize(repo_name).join("/")
+          namespace, name = tokenize(repo_name)
+          if namespace.nil?
+            return name
+          else
+            return "#{namespace}/#{name}"
+          end
         end
 
-        def namespace_only(repo_name)
+        def namespace(repo_name)
           tokenize(repo_name).first
         end
 
