@@ -20,6 +20,10 @@ module Gitomator
           _delegate(__callee__, repo, opts)
         end
 
+        def ci_enabled?(repo)
+          _delegate(__callee__, repo)
+        end
+
       end
     end
   end
