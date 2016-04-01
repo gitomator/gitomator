@@ -2,7 +2,7 @@ require 'gitomator/service/base'
 
 module Gitomator
   module Service
-    module Hosting
+    module Git
       class Service < Gitomator::Service::Base
 
 
