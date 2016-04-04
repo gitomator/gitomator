@@ -11,6 +11,13 @@ module Gitomator
         end
 
 
+        def sync(blocking=false, opts={})
+          _delegate(__callee__, blocking, opts)
+        end
+
+        def syncing?(opts={})
+          _delegate(__callee__, opts)
+        end
 
         def enable_ci(repo, opts={})
           _delegate(__callee__, repo, opts)
