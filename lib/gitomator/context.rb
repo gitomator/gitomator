@@ -15,13 +15,10 @@ module Gitomator
   #
   class BaseContext
 
-
     def initialize(config = {})
       @config = config
       @service2factory = {}
     end
-
-    #---------------------------------------------------------------------------
 
     #
     # @param service [Symbol] One of :logger, :git, :hosting, :ci
@@ -36,25 +33,16 @@ module Gitomator
       return @service2factory[service].call(@config[service.to_s] || {})
     end
 
-    #---------------------------------------------------------------------------
-    # Public API
-
-    def register_logger_factory(&block)
-      register_service_factory(:logger, &block)
-    end
-
-    # Lazy-loading getter
-    def logger
-      @logger ||= create_service(:logger)
-    end
-
   end
 
 
 
   class Context < BaseContext
 
+
+
     #===========================================================================
+    # Static factory methods ...
 
     class << self
       private :new
@@ -75,6 +63,8 @@ module Gitomator
     end
 
     #===========================================================================
+
+
 
     def initialize(config)
       super(config)
@@ -102,6 +92,10 @@ module Gitomator
 
     # Service-factory registration
 
+    def register_logger_factory(&block)
+      register_service_factory(:logger, &block)
+    end
+
     def register_git_service_factory(&block)
       register_service_factory(:git, &block)
     end
@@ -115,6 +109,10 @@ module Gitomator
     end
 
     # Lazy-loading service getters
+
+    def logger
+      @logger ||= create_service(:logger)
+    end
 
     def git
       @git ||= create_service(:git)
