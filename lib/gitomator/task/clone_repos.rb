@@ -46,7 +46,7 @@ module Gitomator
         if repo.nil?
           logger.warn "Repo #{repo_name} doesn't exist"
         else
-          logger.info "Clonning #{repo.url} ..."
+          logger.info "Clonning #{repo.url} (#{index + 1} out of #{@repos.length}) ..."
           git.clone(repo.url, local_repo_root)
         end
       end
