@@ -29,6 +29,7 @@ module Gitomator
 
           def set_remote(local_repo_root, remote, url, opts)
             cmd = "remote #{opts[:create] ? 'add' : 'set-url'} #{remote} #{url}"
+            opts.delete :create
             _run_git_command(cmd, local_repo_root, opts)
           end
 
@@ -37,13 +38,22 @@ module Gitomator
           end
 
 
+          def command(local_repo_root, command)
+            _run_git_command(command, local_repo_root, opts = {})
+          end
+
+          #=====================================================================
+
+
           def _run_command(cmd, opts = {})
             system({}, cmd, opts)
           end
 
           def _run_git_command(cmd, local_repo_root, opts = {})
             opts[:chdir] = local_repo_root
-            cmd = 'git ' + cmd unless cmd.strip.start_with? 'git'
+            unless cmd.strip.start_with? 'git'
+              cmd = 'git ' + cmd
+            end
             _run_command(cmd, opts)
           end
 

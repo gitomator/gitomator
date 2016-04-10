@@ -40,6 +40,10 @@ module Gitomator
           _delegate(__callee__, local_repo_root, remote, opts)
         end
 
+        def command(local_repo_root, command)
+          _delegate(__callee__, local_repo_root, command)
+        end
+
       end
     end
   end
