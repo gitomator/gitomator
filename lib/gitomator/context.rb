@@ -132,6 +132,7 @@ module Gitomator
 
 
     def create_default_hosting_service(config)
+      require 'tmpdir'
       require "gitomator/service/hosting/provider/local"
 
       dir = config['dir'] || Dir.mktmpdir('Gitomator_')
