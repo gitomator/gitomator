@@ -32,6 +32,18 @@ module Gitomator
           _delegate(__callee__, namespace, id_or_name, tag)
         end
 
+        #
+        # Get all tags associated with the specified object.
+        #
+        # @param namespace  [String]
+        # @param id_or_name [String/Number]
+        #
+        # @return [Array<String>]
+        #
+        def tags(namespace, id_or_name)
+          _delegate(__callee__, namespace, id_or_name)
+        end
+
 
         #
         # Search for objects by tag(s).
@@ -68,6 +80,16 @@ module Gitomator
         #
         def set_metadata(namespace, tag, metadata)
           _delegate(__callee__, namespace, tag, metadata)
+        end
+
+        #
+        # Delete all metadata associated with the given tag (in the given namespace).
+        #
+        # @param namespace  [String]
+        # @param tag  [String]
+        #
+        def delete_metadata(namespace, tag)
+          _delegate(__callee__, namespace, tag)
         end
 
       end
