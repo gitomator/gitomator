@@ -1,31 +1,37 @@
 require 'gitomator'
-require 'gitomator/service/git/service'
-require 'gitomator/service/git/provider/shell'
-
-require 'gitomator/service/hosting/service'
-
-require 'gitomator/service/ci/service'
-
 
 
 module Gitomator
+
 
   #
   # Register service-factories, and create services.
   #
   class BaseContext
 
-    def initialize(config = {})
+    #
+    # @param config [Hash]
+    #
+    def initialize(config)
       @config = config
       @service2factory = {}
       @services = {}
+
+      config.select { |_,v| v.is_a?(Hash) && v.has_key?('provider')}
+        .each do |service, service_config|
+          register_service(service.to_sym) do |config|
+            self.send("create_#{config['provider']}_#{service}_service", config || {})
+          end
+        end
+
     end
+
 
     #
     # @param service [Symbol] The service's name.
     # @param block [Proc<Hash> -> Object] Given a config, create a service object.
     #
-    def register_service_factory(service, &block)
+    def register_service(service, &block)
       @service2factory[service] = block
 
       # Create a lazy-loader getter for the service
@@ -36,11 +42,6 @@ module Gitomator
       end
     end
 
-    def create_service(service)
-      raise "Missing service, #{service}" unless @service2factory.has_key? service
-      return @service2factory[service].call(@config[service.to_s] || {})
-    end
-
   end
 
 
@@ -48,8 +49,7 @@ module Gitomator
   class Context < BaseContext
 
 
-
-    #===========================================================================
+    #--------------------------------------------------------------------------------------
     # Static factory methods ...
 
     class << self
@@ -70,38 +70,27 @@ module Gitomator
       return new(config)
     end
 
-    #===========================================================================
+    #--------------------------------------------------------------------------------------
 
 
+    DEFAULT_CONFIG = {
+      'logger'  => { 'provider' => 'default'},
+      'git'     => { 'provider' => 'shell'},
+      'hosting' => { 'provider' => 'local'}
+    }
 
-    def initialize(config)
-      super(config)
-
-      # Regsiter default service factories ...
-
-      register_service_factory :logger do |logger_config|
-        create_default_logger(logger_config)
-      end
-
-      # Shell-based Git service
-      register_service_factory :git do |_|
-        Gitomator::Service::Git::Service.new(Gitomator::Service::Git::Provider::Shell.new)
-      end
-
-      # Local-file-system hosting service
-      register_service_factory :hosting do |hosting_config|
-        create_default_hosting_service(hosting_config)
-      end
-
+    def initialize(config={})
+      super(DEFAULT_CONFIG.merge(config))
     end
 
-    #=========================================================================
-    # Private helper methods
+    #--------------------------------------------------------------------------------------
+    # Service factory methods ...
 
 
-    def create_default_hosting_service(config)
-      require 'tmpdir'
+    def create_local_hosting_service(config)
+      require 'gitomator/service/hosting/service'
       require "gitomator/service/hosting/provider/local"
+      require 'tmpdir'
 
       dir = config['dir'] || Dir.mktmpdir('Gitomator_')
       return Gitomator::Service::Hosting::Service.new (
@@ -110,15 +99,22 @@ module Gitomator
     end
 
 
-    def create_default_logger(c)
+    def create_shell_git_service(_)
+      require 'gitomator/service/git/service'
+      require 'gitomator/service/git/provider/shell'
+      Gitomator::Service::Git::Service.new(Gitomator::Service::Git::Provider::Shell.new)
+    end
+
+
+    def create_default_logger_service(config)
       gem 'logger'; require 'logger'
 
-      if c.nil?
+      if config.nil?
         return Logger.new(STDOUT)
       end
 
       output = STDOUT
-      case c['output']
+      case config['output']
       when nil
         output = STDOUT
       when 'STDOUT'
@@ -128,12 +124,12 @@ module Gitomator
       when 'NULL' || 'OFF'        # Write the dev/null (i.e. logging is off)
         output = File.open(File::NULL, "w")
       else
-        output = File.open(c['output'], "a")
+        output = File.open(config['output'], "a")
       end
 
       lgr = Logger.new(output)
-      if c['level']
-        lgr.level = Logger.const_get(c['level'])
+      if config['level']
+        lgr.level = Logger.const_get(config['level'])
       end
       return lgr
     end
