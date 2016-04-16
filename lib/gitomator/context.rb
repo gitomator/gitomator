@@ -18,14 +18,22 @@ module Gitomator
     def initialize(config = {})
       @config = config
       @service2factory = {}
+      @services = {}
     end
 
     #
-    # @param service [Symbol] One of :logger, :git, :hosting, :ci
-    # @param block [Proc([Hash] config) -> [Object] service]
+    # @param service [Symbol] The service's name.
+    # @param block [Proc<Hash> -> Object] Given a config, create a service object.
     #
     def register_service_factory(service, &block)
       @service2factory[service] = block
+
+      # Create a lazy-loader getter for the service
+      unless self.respond_to? service
+        self.class.send(:define_method, service) do
+          @services[service] ||= @service2factory[service].call(@config[service.to_s] || {})
+        end
+      end
     end
 
     def create_service(service)
@@ -76,7 +84,7 @@ module Gitomator
       end
 
       # Shell-based Git service
-      register_service_factory :git do
+      register_service_factory :git do |_|
         Gitomator::Service::Git::Service.new(Gitomator::Service::Git::Provider::Shell.new)
       end
 
@@ -86,46 +94,6 @@ module Gitomator
       end
 
     end
-
-    #===========================================================================
-    # Convenient wrappers for supported services ...
-
-    # Service-factory registration
-
-    def register_logger_factory(&block)
-      register_service_factory(:logger, &block)
-    end
-
-    def register_git_service_factory(&block)
-      register_service_factory(:git, &block)
-    end
-
-    def register_hosting_service_factory(&block)
-      register_service_factory(:hosting, &block)
-    end
-
-    def register_ci_service_factory(&block)
-      register_service_factory(:ci, &block)
-    end
-
-    # Lazy-loading service getters
-
-    def logger
-      @logger ||= create_service(:logger)
-    end
-
-    def git
-      @git ||= create_service(:git)
-    end
-
-    def hosting
-      @hosting ||= create_service(:hosting)
-    end
-
-    def ci
-      @ci ||= create_service(:ci)
-    end
-
 
     #=========================================================================
     # Private helper methods
