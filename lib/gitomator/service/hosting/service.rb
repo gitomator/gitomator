@@ -142,15 +142,6 @@ module Gitomator
         end
 
 
-        def label_pull_request(dst_repo, id, *labels)
-          _delegate(__callee__, dst_repo, id, *labels)
-        end
-
-        def unlabel_pull_request(dst_repo, id, *labels)
-          _delegate(__callee__, dst_repo, id, *labels)
-        end
-
-
         #
         # A "general-purpose" update method for pull-requests.
         #
