@@ -27,7 +27,8 @@ module Gitomator
           begin
             create_or_update_membership(username, role)
           rescue => e
-            logger.error("Cannot create/update #{username}'s membership in #{@team_name} - #{e}.")
+            logger.error("Cannot create/update #{username}'s membership in " +
+                         "#{@team_name} - #{e}.\n#{e.backtrace.join("\n\t")}")
           end
         end
       end
