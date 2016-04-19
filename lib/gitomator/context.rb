@@ -45,32 +45,20 @@ module Gitomator
   end
 
 
+  #=============================================================================
+
 
   class Context < BaseContext
 
-
-    #--------------------------------------------------------------------------------------
-    # Static factory methods ...
-
-    class << self
-      private :new
-    end
-
     #
+    # Convenience function to create Context instances from configuration files.
     # @param config_file [String/File] - YAML configuration file.
     #
     def self.from_file(config_file)
-      return from_hash(Gitomator::Util.load_config(config_file))
+      return new(Gitomator::Util.load_config(config_file))
     end
 
-    #
-    # @param config [Hash] - Configuration data (e.g. parsed from a YAML file)
-    #
-    def self.from_hash(config)
-      return new(config)
-    end
-
-    #--------------------------------------------------------------------------------------
+    #---------------------------------------------------------------------------
 
 
     DEFAULT_CONFIG = {
@@ -81,9 +69,6 @@ module Gitomator
     def initialize(config={})
       super(DEFAULT_CONFIG.merge(config))
     end
-
-    #--------------------------------------------------------------------------------------
-    # Service factory methods ...
 
 
     def create_local_hosting_service(config)
