@@ -1,10 +1,33 @@
-require 'gitomator/model/hosting/repo'
 require 'fileutils'
+
 
 module Gitomator
   module Service
     module Hosting
       module Provider
+
+
+        #
+        # A small wrapper that takes a hash, and create an attr_accessor for
+        # each hash key.
+        # This is a temporary implementation, until we create proper model
+        # objects (e.g. HostedRepo, Team, PullRequest, etc.)
+        #
+        class ModelObject
+          def initialize(hash)
+            hash.each do |key, value|
+              setter = "#{key}="
+              self.class.send(:attr_accessor, key) if !respond_to?(setter)
+              send setter, value
+            end
+          end
+        end
+
+
+        #
+        # A hosting provider that manages repos in a directory on the local
+        # file-system.
+        #
         class Local
 
           attr_reader :local_dir, :local_repos_dir
@@ -35,13 +58,17 @@ module Gitomator
           def create_repo(name, opts)
             raise "Directory exists, #{repo_root(name)}" if Dir.exist? repo_root(name)
             @git.init(repo_root(name), opts)
-            return Gitomator::Model::Hosting::Repo.new(name, "#{repo_root(name)}/.git")
+            return ModelObject.new({
+              :name => name, :full_name => name, :url => "#{repo_root(name)}/.git"
+            })
           end
 
 
           def read_repo(name)
             if Dir.exist? repo_root(name)
-              return Gitomator::Model::Hosting::Repo.new(name, "#{repo_root(name)}/.git")
+              return ModelObject.new({
+                :name => name, :full_name => name, :url => "#{repo_root(name)}/.git"
+              })
             else
               return nil
             end

@@ -35,13 +35,13 @@ describe Gitomator::Service::Hosting::Provider::Local do
 
   it "create_repo should return a repo model-object" do
     repo = "test-repo-#{(Time.now.to_f * 1000).to_i}"
-    expect(@hosting.create_repo(repo, {})).to be_a_kind_of(Gitomator::Model::Hosting::Repo)
+    expect(@hosting.create_repo(repo, {})).to respond_to(:name, :full_name, :url)
   end
 
 
   it "read_repo should return a repo model-object" do
     repo = @hosting.create_repo("test-repo-#{(Time.now.to_f * 1000).to_i}", {})
-    expect(@hosting.read_repo(repo.name)).to be_a_kind_of(Gitomator::Model::Hosting::Repo)
+    expect(@hosting.read_repo(repo.name)).to respond_to(:name, :full_name, :url)
   end
 
   it "read_repo should return nil when repo doesn't exist" do
