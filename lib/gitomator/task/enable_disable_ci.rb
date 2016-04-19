@@ -1,4 +1,4 @@
-require 'gitomator/task/base'
+require 'gitomator/task'
 
 module Gitomator
   module Task
@@ -6,7 +6,7 @@ module Gitomator
     #
     # Abstract parent class
     #
-    class EnableDisableCI < Gitomator::Task::Base
+    class EnableDisableCI < Gitomator::BaseTask
 
       #
       # @param context - Has a `ci` method that returns a Gitomator::Service::CI

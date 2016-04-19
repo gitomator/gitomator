@@ -22,6 +22,12 @@ module Gitomator
       end
     end
 
+
+    def self.create_default_logger()
+      gem 'logger'; require 'logger'
+      Logger.new(STDOUT)
+    end
+
   end
 
 end

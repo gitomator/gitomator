@@ -1,10 +1,10 @@
-require 'gitomator/task/base'
+require 'gitomator/task'
 require 'set'
 
 module Gitomator
   module Task
 
-    class UpdateRepoAccessPermissions < Gitomator::Task::Base
+    class UpdateRepoAccessPermissions < Gitomator::BaseTask
 
       #
       # @param context

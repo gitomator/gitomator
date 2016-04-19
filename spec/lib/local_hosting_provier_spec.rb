@@ -1,25 +1,25 @@
 require 'gitomator'
 
-require "gitomator/service/hosting/service"
-require "gitomator/service/hosting/provider/local"
+require "gitomator/service/hosting"
+require "gitomator/service_provider/hosting_local"
 
-require "gitomator/service/git/service"
-require "gitomator/service/git/provider/shell"
+require "gitomator/service/git"
+require "gitomator/service_provider/git_shell"
 
 require 'fileutils'
 
 
 
-describe Gitomator::Service::Hosting::Provider::Local do
+describe Gitomator::ServiceProvider::HostingLocal do
 
   before(:all) do
-    @git_provider = Gitomator::Service::Git::Provider::Shell.new()
+    @git_provider = Gitomator::ServiceProvider::GitShell.new()
   end
 
   before(:each) do
     @local_dir = Dir.mktmpdir()
-    @hosting = Gitomator::Service::Hosting::Service.new (
-      Gitomator::Service::Hosting::Provider::Local.new(@git_provider, @local_dir)
+    @hosting = Gitomator::Service::Hosting.new (
+      Gitomator::ServiceProvider::HostingLocal.new(@git_provider, @local_dir)
     )
   end
 
@@ -78,22 +78,22 @@ describe Gitomator::Service::Hosting::Provider::Local do
 
   it "create team" do
     expect { @hosting.create_team("foo") } .to raise_error(
-                                  Gitomator::Service::NotSupportedByProvider)
+                                  Gitomator::Exception::UnsupportedProviderMethod)
   end
 
   it "read team" do
     expect { @hosting.read_team("foo") } .to raise_error(
-                                  Gitomator::Service::NotSupportedByProvider)
+                                  Gitomator::Exception::UnsupportedProviderMethod)
   end
 
   it "update team" do
     expect { @hosting.update_team("foo") } .to raise_error(
-                                  Gitomator::Service::NotSupportedByProvider)
+                                  Gitomator::Exception::UnsupportedProviderMethod)
   end
 
   it "delete team" do
     expect { @hosting.delete_team("foo") } .to raise_error(
-                                  Gitomator::Service::NotSupportedByProvider)
+                                  Gitomator::Exception::UnsupportedProviderMethod)
   end
 
 end

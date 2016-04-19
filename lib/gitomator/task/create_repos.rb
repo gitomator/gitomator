@@ -1,9 +1,9 @@
 require 'tmpdir'
-require 'gitomator/task/base'
+require 'gitomator/task'
 
 module Gitomator
   module Task
-    class CreateRepos < Gitomator::Task::Base
+    class CreateRepos < Gitomator::BaseTask
 
 
       #

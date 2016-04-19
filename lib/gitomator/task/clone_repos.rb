@@ -1,8 +1,8 @@
-require 'gitomator/task/base'
+require 'gitomator/task'
 
 module Gitomator
   module Task
-    class CloneRepos < Gitomator::Task::Base
+    class CloneRepos < Gitomator::BaseTask
 
 
       #

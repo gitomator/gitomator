@@ -1,10 +1,10 @@
-require 'gitomator/task/base'
+require 'gitomator/task'
 require 'set'
 
 module Gitomator
   module Task
 
-    class SetupTeam < Gitomator::Task::Base
+    class SetupTeam < Gitomator::BaseTask
 
       #
       # @param context

@@ -88,7 +88,7 @@ module Gitomator
 
 
     def create_local_hosting_service(config)
-      require 'gitomator/service/hosting/service'
+      require 'gitomator/service/hosting'
       require "gitomator/service/hosting/provider/local"
       require 'tmpdir'
 
@@ -100,7 +100,7 @@ module Gitomator
 
 
     def create_shell_git_service(_)
-      require 'gitomator/service/git/service'
+      require 'gitomator/service/git'
       require 'gitomator/service/git/provider/shell'
       Gitomator::Service::Git::Service.new(Gitomator::Service::Git::Provider::Shell.new)
     end
