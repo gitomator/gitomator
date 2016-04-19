@@ -74,7 +74,6 @@ module Gitomator
 
 
     DEFAULT_CONFIG = {
-      'logger'  => { 'provider' => 'default'},
       'git'     => { 'provider' => 'shell'},
       'hosting' => { 'provider' => 'local'}
     }
@@ -89,49 +88,20 @@ module Gitomator
 
     def create_local_hosting_service(config)
       require 'gitomator/service/hosting'
-      require "gitomator/service/hosting/provider/local"
+      require 'gitomator/service_provider/hosting_local'
       require 'tmpdir'
 
       dir = config['dir'] || Dir.mktmpdir('Gitomator_')
-      return Gitomator::Service::Hosting::Service.new (
-        Gitomator::Service::Hosting::Provider::Local.new(git, dir)
+      return Gitomator::Service::Hosting.new (
+        Gitomator::ServiceProvider::HostingLocal.new(git, dir)
       )
     end
 
 
     def create_shell_git_service(_)
       require 'gitomator/service/git'
-      require 'gitomator/service/git/provider/shell'
-      Gitomator::Service::Git::Service.new(Gitomator::Service::Git::Provider::Shell.new)
-    end
-
-
-    def create_default_logger_service(config)
-      gem 'logger'; require 'logger'
-
-      if config.nil?
-        return Logger.new(STDOUT)
-      end
-
-      output = STDOUT
-      case config['output']
-      when nil
-        output = STDOUT
-      when 'STDOUT'
-        output = STDOUT
-      when 'STDERR'
-        output = STDERR
-      when 'NULL' || 'OFF'        # Write the dev/null (i.e. logging is off)
-        output = File.open(File::NULL, "w")
-      else
-        output = File.open(config['output'], "a")
-      end
-
-      lgr = Logger.new(output)
-      if config['level']
-        lgr.level = Logger.const_get(config['level'])
-      end
-      return lgr
+      require 'gitomator/service_provider/git_shell'
+      Gitomator::Service::Git.new(Gitomator::ServiceProvider::GitShell.new())
     end
 
 

@@ -24,7 +24,7 @@ module Gitomator
 
 
     def logger
-      @logger ||= Gitomator::Util::create_default_logger()
+      @logger ||= Gitomator::Util::create_logger()
     end
 
     def git
