@@ -45,27 +45,16 @@ module Gitomator
 
 
       def create_or_update_membership(username, role)
-        membership = hosting.read_team_membership(@team_name, username)
-        if membership.nil?
+        current_role = hosting.read_team_membership(@team_name, username)
+        if current_role.nil?
           logger.info("Adding #{username} to team #{@team_name} (role: #{role}).")
-          hosting.create_team_membership(@team_name, username, {:role => role})
-        elsif _get_role(membership) != role
-          logger.info("Updating #{username}'s role from #{_get_role(membership)} to #{role} (team: #{@team_name})")
+          hosting.create_team_membership(@team_name, username, role)
+        elsif current_role != role
+          logger.info("Updating #{username}'s role from #{current_role} to #{role} (team: #{@team_name})")
           hosting.update_team_membership(@team_name, username, {:role => role})
         else
           logger.debug("Skipping #{username}, already a #{role} of #{@team_name}.")
         end
-      end
-
-
-      # FIXME: This is a hack! This piece of logic belongs in gitomator-github.
-      #
-      # Once the gitomator and gitomator-github libraries are fully implemented,
-      # the GitHub provider will return provider-agnostic Gitomator model object.
-      # Then, we won't have to adapt here ...
-      #
-      def _get_role(membership)
-        membership[:role] == 'maintainer' ? 'admin' : 'member'
       end
 
 

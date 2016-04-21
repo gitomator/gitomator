@@ -59,21 +59,49 @@ module Gitomator
         service_call(__callee__, query, opts)
       end
 
-      # ------------ CRUD operations on team_memberships ---------------------
+      # ------------ CRUD operations on team_memberships -----------------------
 
 
-      def create_team_membership(team_name, user_name, opts={})
-        service_call(__callee__, team_name, user_name, opts)
+      #
+      # @param team_name [String]
+      # @param user_name [String]
+      # @param role [String]
+      #
+      def create_team_membership(team_name, user_name, role=nil)
+        # The if/else block is here so that different providers can implement
+        # the `create_team_membership` with a default value for the role argument.
+        if role.nil?
+          service_call(__callee__, team_name, user_name)
+        else
+          service_call(__callee__, team_name, user_name, role)
+        end
+
       end
 
+      #
+      # @param team_name [String]
+      # @param user_name [String]
+      # @param role [String]
+      #
+      # @return [String] The current role of `user_name` in `team_name`, or nil (if the user is not a member of the team)
+      #
       def read_team_membership(team_name, user_name)
         service_call(__callee__, team_name, user_name)
       end
 
-      def update_team_membership(team_name, user_name, opts={})
-        service_call(__callee__, team_name, user_name, opts)
+      #
+      # @param team_name [String]
+      # @param user_name [String]
+      # @param role [String]
+      #
+      def update_team_membership(team_name, user_name, role)
+        service_call(__callee__, team_name, user_name, role)
       end
 
+      #
+      # @param team_name [String]
+      # @param user_name [String]
+      #
       def delete_team_membership(team_name, user_name)
         service_call(__callee__, team_name, user_name)
       end
