@@ -21,8 +21,16 @@ module Gitomator
       end
 
       def checkout(local_repo_root, branch, opts)
-        cmd = "checkout #{opts.has_key?('-b') ? '' : '-b'} #{branch}"
-        _run_git_command(cmd, local_repo_root, opts)
+        cmd = 'checkout '
+        if opts[:is_new]
+          cmd += '-b '
+        end
+        cmd += branch
+        if opts[:is_remote]
+          cmd += " origin/#{branch}"
+        end
+
+        _run_git_command(cmd, local_repo_root, {})
       end
 
       def set_remote(local_repo_root, remote, url, opts)
