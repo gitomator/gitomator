@@ -10,22 +10,34 @@ describe Gitomator::Util::Repo::NameResolver do
 
     describe "#tokenize" do
 
-      it "handles names with missing namespace" do
+      it "handles repo-name only" do
         name = SecureRandom.hex
         tokenized = name_resolver.tokenize(name)
-        expect(tokenized).to eq [default_namespace, name]
+        expect(tokenized).to eq [default_namespace, name, nil]
       end
 
 
-      it "handles names with namespace" do
+      it "handles namespace and repo-name" do
         namespace = SecureRandom.hex
         name = SecureRandom.hex
         tokenized = name_resolver.tokenize("#{namespace}/#{name}")
-        expect(tokenized).to eq [namespace, name]
+        expect(tokenized).to eq [namespace, name, nil]
+      end
+
+      it "handles namespace, repo-name and branch" do
+        namespace = SecureRandom.hex
+        name = SecureRandom.hex
+        branch = SecureRandom.hex
+        tokenized = name_resolver.tokenize("#{namespace}/#{name}:#{branch}")
+        expect(tokenized).to eq [namespace, name, branch]
       end
 
       it "fails when the name has more than two components" do
         expect { name_resolver.tokenize("a/b/c") }.to raise_error(StandardError)
+      end
+
+      it "fails on empty string" do
+        expect { name_resolver.tokenize("") }.to raise_error(StandardError)
       end
 
     end
@@ -109,22 +121,33 @@ describe Gitomator::Util::Repo::NameResolver do
 
         describe "#tokenize" do
 
-          it "handles names with missing namespace" do
+          it "handles repo-name only" do
             name = SecureRandom.hex
             tokenized = name_resolver.tokenize(name)
-            expect(tokenized).to eq [nil, name]
+            expect(tokenized).to eq [nil, name, nil]
           end
 
-
-          it "handles names with namespace" do
+          it "handles namespace and repo-name" do
             namespace = SecureRandom.hex
             name = SecureRandom.hex
             tokenized = name_resolver.tokenize("#{namespace}/#{name}")
-            expect(tokenized).to eq [namespace, name]
+            expect(tokenized).to eq [namespace, name, nil]
+          end
+
+          it "handles namespace, repo-name and branch" do
+            namespace = SecureRandom.hex
+            name = SecureRandom.hex
+            branch = SecureRandom.hex
+            tokenized = name_resolver.tokenize("#{namespace}/#{name}:#{branch}")
+            expect(tokenized).to eq [namespace, name, branch]
           end
 
           it "fails when the name has more than two components" do
             expect { name_resolver.tokenize("a/b/c") }.to raise_error(StandardError)
+          end
+
+          it "fails on empty string" do
+            expect { name_resolver.tokenize("") }.to raise_error(StandardError)
           end
 
         end

@@ -3,7 +3,8 @@ module Gitomator
     module Repo
 
       #
-      # Convenience class dealing with repo names of the format "namespace/name".
+      # Convenience class dealing with repo names of the format
+      # `NAMESPACE/REPO:BRANCH`.
       #
       class NameResolver
 
@@ -24,30 +25,40 @@ module Gitomator
         end
 
         def namespace(repo_name)
-          tokenize(repo_name).first
+          tokenize(repo_name)[0]
         end
 
         def name_only(repo_name)
-          tokenize(repo_name).last
+          tokenize(repo_name)[1]
+        end
+
+        def branch(name)
+          tokenize(repo_name)[2]
         end
 
         #
-        # Return an array with two strings, the namespace and name of the given
-        # repo. If the given repo is missing a namespace, self's default
-        # namespace will be used.
+        # Given a string of the format "namespace/name:branch", return an array
+        # with three strings:
+        #  1. Namespace
+        #  2. Repo-name
+        #  3. branch
         #
-        # @param name [String] - The name of the repo in the format "namespace/name".
+        # If the namespace is missing, self's default namespace will be used.
+        #
+        # @param name [String] - The name of the repo in the format "namespace/name:branch".
         #
         def tokenize(name)
-          split_name = name.split "/"
-          case split_name.length
-          when 1
-            return [@default_namespace, name]
-          when 2
-            return split_name
-          else
-            raise "Invalid repo name, '#{name}'."
-          end
+          m = /^([\w-]+\/)?([\w-]+)(\:[\w-]+)?$/.match(name)
+
+          raise "Invalid repo name, '#{name}'." if m.nil?
+
+          namespace = m[1] || @default_namespace
+          namespace = namespace.gsub('/', '') unless namespace.nil?
+          repo = m[2]
+          branch = m[3]
+          branch = branch.gsub(':', '') unless branch.nil?
+
+          return [namespace, repo, branch]
         end
 
 
