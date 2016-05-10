@@ -35,7 +35,11 @@ module Gitomator
       end
 
 
-      def clone_repo(repo_name, index)
+      def clone_repo(source, index)
+        namespace = hosting.resolve_namespace(source)
+        repo_name = hosting.resolve_repo_name(source)
+        branch    = hosting.resolve_branch(source)
+
         local_repo_root = File.join(@local_dir, repo_name)
         if Dir.exist? local_repo_root
           logger.info "Repo #{repo_name} already exists at #{local_repo_root}."
@@ -43,11 +47,14 @@ module Gitomator
         end
 
         repo = hosting.read_repo(repo_name)
-        if repo.nil?
-          logger.warn "Repo #{repo_name} doesn't exist"
-        else
-          logger.info "Clonning #{repo.url} (#{index + 1} out of #{@repos.length}) ..."
-          git.clone(repo.url, local_repo_root)
+        raise "Repo #{repo_name} doesn't exist" if repo.nil?
+
+        logger.info "Clonning #{repo.url} (#{index + 1} out of #{@repos.length}) ..."
+        git.clone(repo.url, local_repo_root)
+
+        unless branch.nil?
+          logger.debug("Switching to remote branch #{branch}")
+          git.checkout(local_repo_root, branch, {:is_new => true, :is_remote => true})
         end
       end
 
