@@ -57,6 +57,14 @@ describe Gitomator::Util::Repo::NameResolver do
         expect(name_resolver.full_name("#{namespace}/#{name}")).to eq "#{namespace}/#{name}"
       end
 
+      it "handles namespace, repo-name and branch" do
+        namespace = SecureRandom.hex
+        name = SecureRandom.hex
+        branch = SecureRandom.hex
+
+        expect(name_resolver.full_name("#{namespace}/#{name}:#{branch}")).to eq "#{namespace}/#{name}"
+      end
+
       it "fails when the name has more than two components" do
         expect { name_resolver.full_name("a/b/c") }.to raise_error(StandardError)
       end
@@ -165,6 +173,14 @@ describe Gitomator::Util::Repo::NameResolver do
             namespace = SecureRandom.hex
             name = SecureRandom.hex
             expect(name_resolver.full_name("#{namespace}/#{name}")).to eq "#{namespace}/#{name}"
+          end
+
+          it "handles namespace, repo-name and branch" do
+            namespace = SecureRandom.hex
+            name = SecureRandom.hex
+            branch = SecureRandom.hex
+
+            expect(name_resolver.full_name("#{namespace}/#{name}:#{branch}")).to eq "#{namespace}/#{name}"
           end
 
           it "fails when the name has more than two components" do
