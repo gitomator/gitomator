@@ -1,4 +1,5 @@
 require 'gitomator/service'
+require 'gitomator/util/repo/name_resolver'
 
 module Gitomator
   module Service
@@ -7,9 +8,25 @@ module Gitomator
 
       def initialize(provider, opts = {})
         super(provider, opts)
+        @name_resolver = Gitomator::Util::Repo::NameResolver.new(
+          provider.respond_to?(:namespace) ? provider.namespace : nil)
       end
 
-      # ----------------------- CRUD operations on repos ---------------------
+      # ---------------------------- Name resolution ---------------------------
+
+      def resolve_namespace(name)
+        @name_resolver.namespace(name)
+      end
+
+      def resolve_repo_name(name)
+        @name_resolver.name_only(name)
+      end
+
+      def resolve_branch(name)
+        @name_resolver.branch(name)
+      end
+
+      # ----------------------- CRUD operations on repos -----------------------
 
       def create_repo(name, opts={})
         service_call(__callee__, name, opts)
