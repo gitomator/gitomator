@@ -24,16 +24,16 @@ module Gitomator
           end
         end
 
-        def namespace(repo_name)
-          tokenize(repo_name)[0]
+        def namespace(name)
+          tokenize(name)[0]
         end
 
-        def name_only(repo_name)
-          tokenize(repo_name)[1]
+        def name_only(name)
+          tokenize(name)[1]
         end
 
         def branch(name)
-          tokenize(repo_name)[2]
+          tokenize(name)[2]
         end
 
         #
