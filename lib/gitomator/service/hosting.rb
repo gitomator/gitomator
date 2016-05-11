@@ -98,7 +98,6 @@ module Gitomator
       #
       # @param team_name [String]
       # @param user_name [String]
-      # @param role [String]
       #
       # @return [String] The current role of `user_name` in `team_name`, or nil (if the user is not a member of the team)
       #
