@@ -1,5 +1,6 @@
 require 'tmpdir'
 require 'gitomator/task'
+require 'gitomator/task/clone_repos'
 
 module Gitomator
   module Task
@@ -26,9 +27,10 @@ module Gitomator
 
         source_repo_local_root = nil
         if @opts[:source_repo]
-          source_repo_local_root = File.join(Dir.mktmpdir('Gitomator_'), @opts[:source_repo])
-          logger.info "Cloning source repo #{@opts[:source_repo]} into #{source_repo_local_root} ..."
-          git.clone(hosting.read_repo(@opts[:source_repo]).url, source_repo_local_root)
+          tmp_dir = Dir.mktmpdir('Gitomator_')
+          repo_name = hosting.resolve_repo_name(@opts[:source_repo])
+          source_repo_local_root = File.join(tmp_dir, repo_name)
+          Gitomator::Task::CloneRepos.new(context, [@opts[:source_repo]], tmp_dir).run()
         end
 
 
@@ -61,8 +63,8 @@ module Gitomator
         # TODO: Can we save the `git push` by comparing the HEAD of both repos?
         logger.info "Updating #{repo.name} from #{source_repo_local_root}"
         git.set_remote(source_repo_local_root, repo.name, repo.url, {create: true})
-        # git.push(source_repo_local_root, repo.name)
-        git.command(source_repo_local_root, "git push #{repo.name}")
+        # Push the HEAD of the local source-repo to the master of the hosted repo
+        git.command(source_repo_local_root, "push #{repo.name} HEAD:master")
       end
 
 
