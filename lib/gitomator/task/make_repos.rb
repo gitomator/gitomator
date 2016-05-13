@@ -4,7 +4,7 @@ require 'gitomator/task/clone_repos'
 
 module Gitomator
   module Task
-    class CreateRepos < Gitomator::BaseTask
+    class MakeRepos < Gitomator::BaseTask
 
 
       #
