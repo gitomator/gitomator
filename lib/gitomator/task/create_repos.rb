@@ -11,7 +11,7 @@ module Gitomator
       # @param context
       # @param repos [Array<String>]
       # @param opts [Hash<Symbol,Object>]
-      # @option opts [Hash]    :create_opts - Options Hash that will be passed to the hosting service when creating the repos.
+      # @option opts [Hash<Symbol,Object>] :repo_properties - For example, :private, :description, :has_issues, etc.
       # @option opts [String]  :source_repo - The name of a repo that will be the "starting point" of all the created repos.
       # @option opts [Boolean] :update_existing - Update existing repos, by pushing latest commit(s) from the source_repo.
       #
@@ -19,18 +19,22 @@ module Gitomator
         super(context)
         @repos = repos
         @opts  = opts
+
+        @source_repo     = opts[:source_repo]
+        @update_existing = opts[:update_existing] || false
+        @repo_properties = opts[:repo_properties] || {}
+        @repo_properties = @repo_properties.map {|k,v| [k.to_sym,v] }.to_h
       end
 
 
       def run
-        logger.info "About to create #{@repos.length} repo(s) ..."
+        logger.info "About to make #{@repos.length} repo(s) ..."
 
         source_repo_local_root = nil
-        if @opts[:source_repo]
+        if @source_repo
           tmp_dir = Dir.mktmpdir('Gitomator_')
-          repo_name = hosting.resolve_repo_name(@opts[:source_repo])
-          source_repo_local_root = File.join(tmp_dir, repo_name)
-          Gitomator::Task::CloneRepos.new(context, [@opts[:source_repo]], tmp_dir).run()
+          Gitomator::Task::CloneRepos.new(context, [@source_repo], tmp_dir).run()
+          source_repo_local_root = File.join(tmp_dir, hosting.resolve_repo_name(@source_repo))
         end
 
 
@@ -39,16 +43,18 @@ module Gitomator
             logger.info "#{repo_name} (#{index + 1} out of #{@repos.length})"
             repo = hosting.read_repo(repo_name)
 
+            # If the repo doesn't exist, create it ...
             if repo.nil?
-              logger.info "Creating repo #{repo_name}"
-              repo = hosting.create_repo(repo_name, @opts[:create_opts] || {})
-              if source_repo_local_root
-                update_repo(repo, source_repo_local_root)
-              end
-            elsif source_repo_local_root && @opts[:update_existing]
-              update_repo(repo, source_repo_local_root)
+              logger.debug "Creating new repo #{repo_name} ..."
+              repo = hosting.create_repo(repo_name, @repo_properties || {})
+              push_commits(repo, source_repo_local_root)
+
+            # If the repo exists, we might need to push changes, or update its properties
             else
-              logger.debug("Skipping #{repo_name}, repo already exists.")
+              if @update_existing
+                push_commits(repo, source_repo_local_root)
+              end
+              update_properties_if_needed(repo, @repo_properties || {})
             end
 
           rescue => e
@@ -58,14 +64,24 @@ module Gitomator
       end
 
 
-
-      def update_repo(repo, source_repo_local_root)
-        # TODO: Can we save the `git push` by comparing the HEAD of both repos?
-        logger.info "Updating #{repo.name} from #{source_repo_local_root}"
-        git.set_remote(source_repo_local_root, repo.name, repo.url, {create: true})
-        # Push the HEAD of the local source-repo to the master of the hosted repo
-        git.command(source_repo_local_root, "push #{repo.name} HEAD:master")
+      def push_commits(hosted_repo, local_repo)
+        if local_repo
+          logger.debug "Pushing commits from #{local_repo} to #{hosted_repo.name} "
+          git.set_remote(local_repo, hosted_repo.name, hosted_repo.url, {create: true})
+          git.command(local_repo, "push #{hosted_repo.name} HEAD:master")
+        end
       end
+
+
+      def update_properties_if_needed(repo, props)
+        p = repo.properties
+        diff = props.select {|k,v| p.has_key?(k) && p[k] != v}
+        unless(diff.empty?)
+          logger.debug "Updating #{repo.name} properties #{diff}"
+          hosting.update_repo(repo.name, diff)
+        end
+      end
+
 
 
       def on_error(repo_name, index, err)
