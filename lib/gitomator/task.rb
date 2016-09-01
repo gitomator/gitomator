@@ -35,6 +35,10 @@ module Gitomator
       context.hosting
     end
 
+    def tagging
+      context.tagging
+    end
+
     def ci
       context.ci
     end
