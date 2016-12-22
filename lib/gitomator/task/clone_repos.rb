@@ -6,7 +6,7 @@ module Gitomator
 
 
       #
-      # @param context - A context
+      # @param context [Gitomator::Context]
       # @param repos [Array<String>] The repos to clone
       # @param local_dir [String] A local directory where the repos will be cloned.
       # @param opts [Hash]
