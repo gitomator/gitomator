@@ -8,6 +8,7 @@ module Gitomator
 
         attr_accessor :default_access_permission
         attr_accessor :repo_properties
+        attr_accessor :source_repo
 
         #
         # @param config_obj [Hash] Configuration data (commonly loaded from a YAML file)
@@ -17,6 +18,7 @@ module Gitomator
           @repo2permissions = parse_repo2permissions(config_obj['repos'])
 
           default_access_permission = (config_obj['default_access_permission'] || :read).to_sym
+          source_repo = config_obj['source_repo']
           repo_properties = config_obj['repo_properties'] || {}
         end
 
