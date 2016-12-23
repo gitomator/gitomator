@@ -15,13 +15,14 @@ module Gitomator
         #
         def initialize(config_obj)
           raise "Missing required key, repos" unless config_obj.has_key? 'repos'
-          @repo2permissions = parse_repo2permissions(config_obj['repos'])
-
+          
           @default_access_permission = (config_obj['default_access_permission'] || :read).to_sym
           @source_repo = config_obj['source_repo']
           @repo_properties = config_obj['repo_properties'] || {}
+
+          @repo2permissions = parse_repo2permissions(config_obj['repos'])
         end
-        
+
 
         #
         # @return [Enumerable<Strings>] The names of the repos.
