@@ -16,8 +16,6 @@ config_hash = Gitomator::Util.load_config(ARGV[0])
 task_config = Gitomator::Task::Config::ReposConfig.new(config_hash)
 local_dir   = ARGV[1]
 
-puts task_config.repos
-
 Gitomator::ScriptUtil::run_task(
   Gitomator::Task::CloneRepos.new(context, task_config.repos, local_dir)
 )
