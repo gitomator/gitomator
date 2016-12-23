@@ -3,7 +3,7 @@
 require 'bundler/setup'
 require 'gitomator/util/script_util'
 require 'gitomator/context'
-require 'gitomator/task/clone_repos'
+require 'gitomator/task/make_repos'
 require 'gitomator/task/config/repos_config'
 
 usage_message  = "Usage: #{File.basename($0)} ASSIGNMENT-CONFIG"
@@ -28,18 +28,16 @@ context     = Gitomator::Context.from_file(opts[:context])
 config_hash = Gitomator::Util.load_config(ARGV[0])
 task_config = Gitomator::Task::Config::ReposConfig.new(config_hash)
 
-
 task_opts = {}
-if assignment.source_repo
+if task_config.source_repo
   task_opts[:source_repo] = task_config.source_repo
 end
-if assignment.repo_properties
+if task_config.repo_properties
   task_opts[:repo_properties] = task_config.repo_properties.map {|k,v| [k.to_sym,v]} .to_h
 end
 if opts[:update_existing]
   task_opts[:update_existing] = true
 end
-
 
 
 Gitomator::ScriptUtil::run_task(
