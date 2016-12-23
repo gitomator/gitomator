@@ -6,9 +6,9 @@ module Gitomator
 
       class ReposConfig
 
-        attr_accessor :default_access_permission
-        attr_accessor :repo_properties
-        attr_accessor :source_repo
+        attr_reader :default_access_permission
+        attr_reader :repo_properties
+        attr_reader :source_repo
 
         #
         # @param config_obj [Hash] Configuration data (commonly loaded from a YAML file)
@@ -17,11 +17,11 @@ module Gitomator
           raise "Missing required key, repos" unless config_obj.has_key? 'repos'
           @repo2permissions = parse_repo2permissions(config_obj['repos'])
 
-          default_access_permission = (config_obj['default_access_permission'] || :read).to_sym
-          source_repo = config_obj['source_repo']
-          repo_properties = config_obj['repo_properties'] || {}
+          @default_access_permission = (config_obj['default_access_permission'] || :read).to_sym
+          @source_repo = config_obj['source_repo']
+          @repo_properties = config_obj['repo_properties'] || {}
         end
-
+        
 
         #
         # @return [Enumerable<Strings>] The names of the repos.
