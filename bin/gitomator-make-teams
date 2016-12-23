@@ -1,0 +1,20 @@
+#!/usr/bin/env ruby
+
+require 'bundler/setup'
+require 'gitomator/util/script_util'
+require 'gitomator/context'
+require 'gitomator/task/setup_team'
+require 'gitomator/task/config/team_config'
+
+usage_message  = "Usage: #{File.basename($0)} TEAMS-CONFING"
+opts = Gitomator::ScriptUtil::DefaultOptionParser.new(usage_message).parse(ARGV)
+abort usage_message if ARGV.length != 1
+
+context     = Gitomator::Context.from_file(opts[:context])
+config_hash = Gitomator::Util.load_config(ARGV[0])
+
+Gitomator::Task::Config::TeamConfig::from_hash(config_hash).each do |team|
+  Gitomator::ScriptUtil::run_task(
+    Gitomator::Task::SetupTeam.new(context, team.name, team.members)
+  )
+end
