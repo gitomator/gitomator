@@ -21,7 +21,7 @@ module Gitomator
 
 
       def run
-        logger.debug "Clonning #{@repos.length} handout(s) into #{@local_dir} ..."
+        logger.debug "Clonning #{@repos.length} repo(s) into #{@local_dir} ..."
 
         @repos.each_with_index do |repo_name, index|
           begin
