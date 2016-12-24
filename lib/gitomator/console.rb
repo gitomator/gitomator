@@ -12,7 +12,7 @@ module Gitomator
       @context
     end
 
-    # ==========================================================================
+    # ====================== Convenience Console Functions =====================
 
     def gitomator_version
       Gitomator::VERSION
@@ -23,6 +23,7 @@ module Gitomator
     end
 
 
+    # --------------------------------------------------------------------------
 
     def search_repos(query)
       gitomator_context.hosting.search_repos(query).map {|r| r.full_name}
@@ -40,6 +41,12 @@ module Gitomator
 
     def delete_team(team_name)
       gitomator_context.hosting.delete_team(team_name)
+    end
+
+
+    def list_team_members(team_name)
+      gitomator_context.hosting
+        .search_users('', { team_name: team_name }).map {|u| u.username}
     end
 
 
