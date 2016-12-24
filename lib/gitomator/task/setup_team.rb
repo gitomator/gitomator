@@ -51,7 +51,7 @@ module Gitomator
           hosting.create_team_membership(@team_name, username, role)
         elsif current_role != role
           logger.info("Updating #{username}'s role from #{current_role} to #{role} (team: #{@team_name})")
-          hosting.update_team_membership(@team_name, username, {:role => role})
+          hosting.update_team_membership(@team_name, username, role)
         else
           logger.debug("Skipping #{username}, already a #{role} of #{@team_name}.")
         end
