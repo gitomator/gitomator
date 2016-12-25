@@ -1,0 +1,24 @@
+#!/usr/bin/env ruby
+
+require 'bundler/setup'
+require 'gitomator/util/script_util'
+require 'gitomator/context'
+require 'gitomator/task/enable_disable_ci'
+require 'gitomator/task/config/repos_config'
+
+usage_message  = "Usage: #{File.basename($0)} REPOS-CONFING"
+parser = Gitomator::ScriptUtil::DefaultOptionParser.new(usage_message)
+parser.opt(:sync, "Synchronize the CI service.")
+opts = parser.parse(ARGV)
+abort usage_message if ARGV.length != 1
+
+context = Gitomator::Context.from_file(opts[:context])
+
+config_hash  = Gitomator::Util.load_config(ARGV[0])
+repos_config = Gitomator::Task::Config::ReposConfig.new(config_hash)
+
+task_opts = { :sync => opts[:sync] }
+
+Gitomator::ScriptUtil::run_task(
+  Gitomator::Task::EnableCI.new(context, repos_config.repos, task_opts)
+)
