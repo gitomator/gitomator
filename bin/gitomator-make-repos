@@ -6,7 +6,7 @@ require 'gitomator/context'
 require 'gitomator/task/make_repos'
 require 'gitomator/task/config/repos_config'
 
-usage_message  = "Usage: #{File.basename($0)} ASSIGNMENT-CONFIG"
+usage_message  = "Usage: #{File.basename($0)} REPOS-CONFING"
 banner = <<-EOS
 Command-line tool to create repos based on a configuration file.
 

@@ -6,7 +6,7 @@ require 'gitomator/context'
 require 'gitomator/task/update_repo_access_permissions'
 require 'gitomator/task/config/repos_config'
 
-usage_message  = "Usage: #{File.basename($0)} ASSIGNMENT-CONFIG"
+usage_message  = "Usage: #{File.basename($0)} REPOS-CONFING"
 banner = <<-EOS
 Command-line tool to update access permissions (who gets what access-permission to which repos).
 
