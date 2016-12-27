@@ -10,7 +10,7 @@ Gem::Specification.new do |spec|
   spec.email         = ["joeyfreund@gmail.com"]
 
   spec.summary       = "Automation tools for Git repo  organizations."
-  spec.homepage      = "TODO: Put your gem's website or public repo URL here."
+  spec.homepage      = "https://github.com/gitomator/gitomator"
   spec.license       = "MIT"
 
   spec.files         = `git ls-files -z`.split("\x0").reject { |f| f.match(%r{^(test|spec|features)/}) }
@@ -22,6 +22,7 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "rake", "~> 10.0"
   spec.add_development_dependency "rspec"
 
+  spec.add_runtime_dependency 'trollop', '~> 2.1', '>= 2.1.2'
   spec.add_runtime_dependency 'logger', '~> 1.2', '>= 1.2.8'
 
 end

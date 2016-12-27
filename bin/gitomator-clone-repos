@@ -1,0 +1,21 @@
+#!/usr/bin/env ruby
+
+require 'bundler/setup'
+require 'gitomator/util/script_util'
+require 'gitomator/context'
+require 'gitomator/task/clone_repos'
+require 'gitomator/task/config/repos_config'
+
+usage_message  = "Usage: #{File.basename($0)} REPOS-CONFING LOCAL-DIR"
+opts = Gitomator::ScriptUtil::DefaultOptionParser.new(usage_message).parse(ARGV)
+abort usage_message if ARGV.length != 2
+
+context     = Gitomator::Context.from_file(opts[:context])
+
+config_hash = Gitomator::Util.load_config(ARGV[0])
+task_config = Gitomator::Task::Config::ReposConfig.new(config_hash)
+local_dir   = ARGV[1]
+
+Gitomator::ScriptUtil::run_task(
+  Gitomator::Task::CloneRepos.new(context, task_config.repos, local_dir)
+)

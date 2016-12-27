@@ -1,4 +1,4 @@
-require 'gitomator/task'
+require 'gitomator/task/base_repos_task'
 
 module Gitomator
   module Task
@@ -6,7 +6,7 @@ module Gitomator
     #
     # Abstract parent class
     #
-    class EnableDisableCI < Gitomator::BaseTask
+    class EnableDisableCI < Gitomator::Task::BaseReposTask
 
       #
       # @param context - Has a `ci` method that returns a Gitomator::Service::CI
@@ -15,50 +15,38 @@ module Gitomator
       # @option opts [Boolean] :sync - Indicate whether we should start by sync'ing the CI service.
       #
       def initialize(context, repos, opts={})
-        super(context)
-        @repos = repos
-        @opts  = opts
-      end
+        super(context, repos)
 
-
-      def run
-        if @opts[:sync]
-          sync()
+        if opts[:sync]
+          before_processing_any_repos do
+            logger.info "Syncing CI service (this may take a little while) ..."
+            ci.sync()
+            while ci.syncing?
+              print "."
+              sleep 1
+            end
+            puts ""
+            logger.info "CI service synchronized"
+          end
         end
-        @repos.each_with_index { |repo,index| enable_or_disable_ci(repo,index) }
       end
 
-
-      def enable_or_disable_ci(repo_name, index)
-        raise "Subclasses implement this method"
-      end
-
-
-      def sync
-        logger.info "Syncing CI service (this may take a little while) ..."
-        ci.sync()
-        while ci.syncing?
-          print "."
-          sleep 1
-        end
-        logger.info "CI service synchronized"
-      end
 
     end
 
 
 
     class EnableCI < EnableDisableCI
-      def enable_or_disable_ci(repo_name, i)
-        logger.info "Enabling CI for #{repo_name} (#{i + 1} out of #{@repos.length})"
+      def process_repo(repo_name, i)
+        logger.info "Enabling CI for #{repo_name} (#{i + 1} out of #{repos.length})"
         ci.enable_ci repo_name
       end
     end
 
 
     class DisableCI < EnableDisableCI
-      def enable_or_disable_ci(repo_name, i)
-        logger.info "Disabling CI for #{repo_name} (#{i + 1} out of #{@repos.length})"
+      def process_repo(repo_name, i)
+        logger.info "Disabling CI for #{repo_name} (#{i + 1} out of #{repos.length})"
         ci.disable_ci repo_name
       end
     end

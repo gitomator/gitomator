@@ -1,0 +1,72 @@
+#!/usr/bin/env ruby
+
+require 'bundler/setup'
+require 'gitomator/util/script_util'
+require 'gitomator/context'
+require 'gitomator/task/update_repo_access_permissions'
+require 'gitomator/task/config/repos_config'
+
+usage_message  = "Usage: #{File.basename($0)} REPOS-CONFING"
+banner = <<-EOS
+Command-line tool to update access permissions (who gets what access-permission to which repos).
+
+  #{usage_message}
+
+EOS
+
+parser = Gitomator::ScriptUtil::DefaultOptionParser.new(banner)
+parser.opt :permission_type,
+  "One of 'user', 'team' or 'mixed'.\nIndicates whether the names in the " +
+  "configuration files are usernames, team names, or a mix of both " +
+  "(in which case the script will first look for team with the specified name).",
+  :default => 'user'
+
+opts = parser.parse(ARGV)
+
+parser.die :type, "Type must be one of 'user', 'team' or 'mixed'" unless ['user','team','mixed'].include? opts[:permission_type]
+abort usage_message if ARGV.length != 1
+
+
+
+context     = Gitomator::Context.from_file(opts[:context])
+config_hash = Gitomator::Util.load_config(ARGV[0])
+task_config = Gitomator::Task::Config::ReposConfig.new(config_hash)
+
+#-------------------------------------------------------------------------------
+# Actual script ...
+
+tasks = []
+
+# If the permission is mixed, we should cache all team names
+# For every name we encounter, we will check if it's a team's name.
+team_names = nil
+if opts[:permission_type] == 'mixed'
+  team_names = context.hosting.search_teams('').map {|t| t.name}
+end
+
+
+task_config.repos.each do |repo|
+  user2permission = {}
+  team2permission = {}
+
+  # The names in the assignment config might be usernames, team names, or a mix of both.
+  case opts[:permission_type]
+  when 'user'
+    user2permission = task_config.permissions(repo)
+  when 'team'
+    team2permission = task_config.permissions(repo)
+  when 'mixed'
+    task_config.permissions(repo).each do |name, permission|
+      if team_names.include? name
+        team2permission[name] = permission
+      else
+        user2permission[name] = permission
+      end
+    end
+  end
+
+  tasks.push Gitomator::Task::UpdateRepoAccessPermissions.new(
+                              context, repo, user2permission, team2permission)
+end
+
+Gitomator::ScriptUtil::run_tasks(tasks)
