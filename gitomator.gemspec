@@ -10,7 +10,7 @@ Gem::Specification.new do |spec|
   spec.email         = ["joeyfreund@gmail.com"]
 
   spec.summary       = "Automation tools for Git repo  organizations."
-  spec.homepage      = "TODO: Put your gem's website or public repo URL here."
+  spec.homepage      = "https://github.com/gitomator/gitomator"
   spec.license       = "MIT"
 
   spec.files         = `git ls-files -z`.split("\x0").reject { |f| f.match(%r{^(test|spec|features)/}) }
