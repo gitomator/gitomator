@@ -24,5 +24,7 @@ Gem::Specification.new do |spec|
 
   spec.add_runtime_dependency 'trollop', '~> 2.1', '>= 2.1.2'
   spec.add_runtime_dependency 'logger', '~> 1.2', '>= 1.2.8'
+  spec.add_runtime_dependency 'travis', '~> 1.8', '>= 1.8.2'
+  spec.add_runtime_dependency 'octokit', '~> 4.2'
 
 end
