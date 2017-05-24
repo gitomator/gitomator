@@ -1,3 +1,3 @@
 module Gitomator
-  VERSION = "0.1.2.3"
+  VERSION = "0.1.2.4"
 end
