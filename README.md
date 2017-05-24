@@ -34,6 +34,7 @@ hosting:
   provider: github
   access_token: YOUR-GITHUB-ACCESS-TOKEN
   organization: YOUR-GITHUB-ORGANIZATION
+  default_protocol: ssh  # This line is optional
 
 ci:
   provider: travis_pro
@@ -43,6 +44,8 @@ ci:
 
  >  * You can read more about how to [create an access token on GitHub](https://github.com/blog/1509-personal-api-tokens).
  >  * If you don't use Travis CI, feel free to omit the `ci` configuration
+ >  * The `hosting`'s `default_protocol` can be either `https` or `ssh`.
+      If it is not specified, then `https` will be the default protocol.
  >  * You can specify a different path (other than `~/.gitomator`) for you configuration file, by setting the `GITOMATOR_CONTEXT` environment variable.
  >  * **Important:** Keep your credentials safe!      
       The `.gitomator` file is local to your machine, and should *not* be committed to version control.
