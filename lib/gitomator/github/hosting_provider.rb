@@ -17,6 +17,9 @@ module Gitomator
       #
       def self.from_config(config = {})
         org = config['organization'] || config[:organization]
+        if config['default_protocol']
+          Gitomator::GitHub::Model::HostedRepo::default_protocol= config['default_protocol']
+        end
         return new(Gitomator::GitHub::github_client_from_config(config), org)
       end
 

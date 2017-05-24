@@ -3,6 +3,21 @@ module Gitomator
     module Model
       class HostedRepo
 
+        @@default_protocol = :https
+
+        def self.default_protocol
+          @@default_protocol
+        end
+
+        def self.default_protocol=protocol
+          protocol = protocol.to_sym
+          raise "Invalid protocol #{protocol}" unless [:https, :ssh].include? protocol
+          @@default_protocol = protocol
+        end
+
+
+        #-----------------------------------------------------------------------
+
 
         #
         # @param gh_repo [Sawyer::Resource]
@@ -20,8 +35,13 @@ module Gitomator
           @r.full_name
         end
 
-        def url
-          @r.clone_url
+        def url(protocol=nil)
+          protocol ||= HostedRepo::default_protocol()
+          if protocol.to_sym == :ssh
+            return @r.ssh_url
+          else
+            return @r.clone_url
+          end
         end
 
         def properties
